@@ -136,3 +136,21 @@ def test_peso_amostral_nao_e_feature():
     feats = selecionar_features(COLUNAS_EXEMPLO + ["alu_peso_amostral"])
     for col in ARTEFATOS_AMOSTRAIS:
         assert col not in feats
+
+
+def test_nome_da_coluna_de_meta_confere_com_a_abt():
+    """A coluna de meta usada na análise de risco tem de existir na ABT.
+
+    A meta foi renomeada de `mun_meta_ano_alvo` para `mun_lag_meta_ano_alvo` quando se
+    descobriu que ela deriva do resultado de 2023 (correlação 0,968) e precisa ser
+    tratada como feature defasada. Este teste trava a divergência entre o SQL que
+    produz a coluna e o código que a consome.
+    """
+    import inspect
+
+    from src.evaluation.aplicacao import risco_de_nao_atingir_meta
+
+    padrao = inspect.signature(risco_de_nao_atingir_meta).parameters["coluna_meta"].default
+    sql = (Path(__file__).resolve().parents[1]
+           / "sql" / "features" / "20_abt_aluno.sql").read_text(encoding="utf-8")
+    assert padrao in sql, f"`{padrao}` não é produzida pela ABT"

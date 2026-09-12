@@ -1,0 +1,207 @@
+feature,importancia,medida,bloco
+alu_caderno,6274,ganho,aluno
+id_municipio,3878,ganho,identificação geográfica
+sigla_uf,1049,ganho,identificação geográfica
+ter_mesorregiao,987,ganho,território
+inse_tamanho_medio_escola,557,ganho,escola (socioeconômico)
+inf_dispositivos_por_aluno,547,ganho,escola (infraestrutura)
+inf_alunos_por_docente_ai,529,ganho,escola (infraestrutura)
+fin_desp_professor_por_aluno,523,ganho,município (financiamento)
+fin_pct_mde_sobre_impostos,504,ganho,município (financiamento)
+inf_alunos_por_turma_ai,502,ganho,escola (infraestrutura)
+inf_pct_tempo_integral_ai,495,ganho,escola (infraestrutura)
+ses_prop_crianca_fora_escola,489,ganho,município (socioeconômico)
+inse_desvio_escolas,489,ganho,escola (socioeconômico)
+edu_tdi_anos_iniciais,487,ganho,educacional
+ses_share_indigena_quilombola,478,ganho,município (socioeconômico)
+edu_tdi_2ano,474,ganho,educacional
+edu_docentes_superior_ai,471,ganho,educacional
+inf_matriculas_ai,462,ganho,escola (infraestrutura)
+ses_share_esgoto_inadequado,459,ganho,município (socioeconômico)
+inse_desvio_vs_uf,452,ganho,escola (socioeconômico)
+fin_pct_ens_fund_sobre_educacao,445,ganho,município (financiamento)
+ses_taxa_freq_escola_5_6,438,ganho,município (socioeconômico)
+ses_taxa_atraso_2anos_fund,433,ganho,município (socioeconômico)
+ses_valor_medio_familia_pbf,432,ganho,município (socioeconômico)
+ses_prop_mae_sem_fundamental,430,ganho,município (socioeconômico)
+inf_pct_quadra,429,ganho,escola (infraestrutura)
+ses_taxa_desocupacao,427,ganho,município (socioeconômico)
+edu_ideb_ai_rede_do_aluno,420,ganho,educacional
+fin_pct_fundeb_nao_aplicado,418,ganho,município (financiamento)
+fin_pct_fundeb_ens_fund,416,ganho,município (financiamento)
+fin_pct_desp_ens_fund_sobre_educ,415,ganho,município (financiamento)
+edu_alunos_por_turma_ai,415,ganho,educacional
+edu_gap_tdi_rural_urbana,410,ganho,educacional
+inf_pct_biblioteca_leitura,407,ganho,escola (infraestrutura)
+edu_afd_grupo1_ai,404,ganho,educacional
+fin_invest_aluno_ens_fund,402,ganho,município (financiamento)
+ses_expectativa_anos_estudo,401,ganho,município (socioeconômico)
+ses_ivs_infra_urbana,400,ganho,município (socioeconômico)
+edu_esforco_docente_n1,398,ganho,educacional
+ses_densidade_demografica,398,ganho,município (socioeconômico)
+ses_pib_per_capita,392,ganho,município (socioeconômico)
+edu_aprovacao_ai_lag1,390,ganho,educacional
+inf_pct_urbana,385,ganho,escola (infraestrutura)
+fin_pct_fundeb_sobre_desp_total,375,ganho,município (financiamento)
+fin_pct_educacao_sobre_desp_total,374,ganho,município (financiamento)
+edu_complexidade_gestao_n1,371,ganho,educacional
+inf_pct_internet_aprendizagem,366,ganho,escola (infraestrutura)
+ses_moradores_por_domicilio,366,ganho,município (socioeconômico)
+ses_share_domicilio_precario,359,ganho,município (socioeconômico)
+edu_saeb_nota_mat,359,ganho,educacional
+ses_mortalidade_infantil,356,ganho,município (socioeconômico)
+inse_min_escola,354,ganho,escola (socioeconômico)
+inf_pct_lab_informatica,353,ganho,escola (infraestrutura)
+fin_pct_fundeb_educ_infantil,351,ganho,município (financiamento)
+fin_invest_aluno_educ_basica,347,ganho,município (financiamento)
+inf_pct_banda_larga,340,ganho,escola (infraestrutura)
+inf_pct_refeitorio,339,ganho,escola (infraestrutura)
+edu_saeb5_pct_lp_altos,337,ganho,educacional
+inse_pct_niveis_altos,335,ganho,escola (socioeconômico)
+ses_fecundidade_total,333,ganho,município (socioeconômico)
+ter_latitude,332,ganho,território
+ter_longitude,326,ganho,território
+inf_pct_prof_pedagogia,326,ganho,escola (infraestrutura)
+inf_pct_conselho_escolar,325,ganho,escola (infraestrutura)
+ses_prop_domicilio_denso,311,ganho,município (socioeconômico)
+edu_saeb5_pct_lp_baixos,302,ganho,educacional
+edu_saeb5_gap_urbano_rural_lp,300,ganho,educacional
+ses_razao_pbf_cadunico,300,ganho,município (socioeconômico)
+edu_reprovacao_ai_lag1,298,ganho,educacional
+edu_ideb_variacao,296,ganho,educacional
+edu_regularidade_docente_baixa,295,ganho,educacional
+ses_indice_envelhecimento,292,ganho,município (socioeconômico)
+ses_prop_resp_sem_fundamental,292,ganho,município (socioeconômico)
+inf_pct_parque_infantil,287,ganho,escola (infraestrutura)
+fin_log_desp_educacao,286,ganho,município (financiamento)
+ses_taxa_cadunico,285,ganho,município (socioeconômico)
+ses_log_populacao,285,ganho,município (socioeconômico)
+inse_pct_niveis_baixos,285,ganho,escola (socioeconômico)
+edu_alunos_por_turma_rural,283,ganho,educacional
+ses_share_pop_5a9,282,ganho,município (socioeconômico)
+fin_log_receita_fundeb,281,ganho,município (financiamento)
+inf_pct_material_jogo,281,ganho,escola (infraestrutura)
+inf_n_escolas_ai,277,ganho,escola (infraestrutura)
+ses_ivs_capital_humano,274,ganho,município (socioeconômico)
+inse_pct_escolas_rurais,273,ganho,escola (socioeconômico)
+edu_ideb_taxa_aprovacao,270,ganho,educacional
+ses_ivs_renda_trabalho,269,ganho,município (socioeconômico)
+inf_pct_esgoto_publico,267,ganho,escola (infraestrutura)
+edu_saeb_nota_lp,262,ganho,educacional
+ses_idhm_educacao,258,ganho,município (socioeconômico)
+inf_pct_lixo_coleta,257,ganho,escola (infraestrutura)
+inse_medio,251,ganho,escola (socioeconômico)
+ses_gini,250,ganho,município (socioeconômico)
+ses_ivs,249,ganho,município (socioeconômico)
+ses_taxa_alfab_adultos_25a44,247,ganho,município (socioeconômico)
+ses_share_pop_0a14,246,ganho,município (socioeconômico)
+ses_cobertura_pbf_atual,243,ganho,município (socioeconômico)
+ses_taxa_alfabetizacao_15mais,239,ganho,município (socioeconômico)
+edu_abandono_ai_lag1,232,ganho,educacional
+ses_prop_pobreza_criancas,227,ganho,município (socioeconômico)
+edu_saeb5_media_lp,223,ganho,educacional
+edu_ideb_indicador_rendimento,210,ganho,educacional
+ses_log_renda_per_capita,209,ganho,município (socioeconômico)
+inse_n_escolas,185,ganho,escola (socioeconômico)
+ses_taxa_pbf,180,ganho,município (socioeconômico)
+ses_valor_pbf_per_capita_atual,179,ganho,município (socioeconômico)
+ses_prop_vulneravel,168,ganho,município (socioeconômico)
+fin_pct_complementacao_uniao,158,ganho,município (financiamento)
+inse_medio_uf,156,ganho,escola (socioeconômico)
+edu_ideb_ai_publica,141,ganho,educacional
+edu_regularidade_docente_alta,135,ganho,educacional
+ses_idade_mediana,124,ganho,município (socioeconômico)
+inf_pct_agua_potavel,107,ganho,escola (infraestrutura)
+alu_rede_Estadual,83,ganho,aluno
+edu_horas_aula_ai,79,ganho,educacional
+missingindicator_edu_alunos_por_turma_ai,69,ganho,outros
+edu_ideb_ai_publica_imputado,67,ganho,educacional
+edu_ideb_ai_uf,65,ganho,educacional
+inf_pct_energia_publica,42,ganho,escola (infraestrutura)
+edu_afd_grupo5_ai,42,ganho,educacional
+edu_esforco_docente_n6,40,ganho,educacional
+missingindicator_edu_horas_aula_ai,20,ganho,outros
+missingindicator_edu_gap_tdi_rural_urbana,17,ganho,outros
+missingindicator_edu_alunos_por_turma_rural,14,ganho,outros
+alu_rede_Municipal,13,ganho,aluno
+missingindicator_edu_ideb_ai_rede_do_aluno,12,ganho,outros
+missingindicator_edu_saeb5_gap_urbano_rural_lp,11,ganho,outros
+missingindicator_edu_tdi_2ano,10,ganho,outros
+missingindicator_inse_desvio_escolas,9,ganho,outros
+ter_amazonia_legal,6,ganho,território
+missingindicator_edu_tdi_anos_iniciais,6,ganho,outros
+ter_regiao_Centro-Oeste,6,ganho,território
+ter_regiao_Sudeste,6,ganho,território
+missingindicator_edu_ideb_variacao,6,ganho,outros
+missingindicator_edu_afd_grupo5_ai,4,ganho,outros
+edu_ideb_imputado_uf,4,ganho,educacional
+missingindicator_edu_ideb_taxa_aprovacao,4,ganho,outros
+ter_regiao_Norte,4,ganho,território
+missingindicator_fin_log_receita_fundeb,3,ganho,outros
+missingindicator_edu_ideb_ai_publica,3,ganho,outros
+missingindicator_edu_saeb5_media_lp,2,ganho,outros
+missingindicator_fin_log_desp_educacao,2,ganho,outros
+missingindicator_edu_ideb_indicador_rendimento,1,ganho,outros
+missingindicator_edu_esforco_docente_n6,1,ganho,outros
+missingindicator_inse_medio,1,ganho,outros
+missingindicator_edu_saeb_nota_lp,1,ganho,outros
+missingindicator_fin_pct_fundeb_sobre_desp_total,1,ganho,outros
+ter_regiao_Nordeste,1,ganho,território
+ter_regiao_Sul,1,ganho,território
+missingindicator_fin_pct_educacao_sobre_desp_total,1,ganho,outros
+missingindicator_edu_saeb_nota_mat,1,ganho,outros
+inf_pct_alimentacao,0,ganho,escola (infraestrutura)
+ter_capital_uf,0,ganho,território
+missingindicator_inf_alunos_por_turma_ai,0,ganho,outros
+missingindicator_inf_alunos_por_docente_ai,0,ganho,outros
+missingindicator_inse_medio_uf,0,ganho,outros
+missingindicator_inse_desvio_vs_uf,0,ganho,outros
+missingindicator_inse_min_escola,0,ganho,outros
+missingindicator_edu_regularidade_docente_alta,0,ganho,outros
+missingindicator_edu_complexidade_gestao_n1,0,ganho,outros
+missingindicator_edu_esforco_docente_n1,0,ganho,outros
+missingindicator_edu_docentes_superior_ai,0,ganho,outros
+missingindicator_edu_afd_grupo1_ai,0,ganho,outros
+missingindicator_inse_pct_escolas_rurais,0,ganho,outros
+missingindicator_inse_pct_niveis_altos,0,ganho,outros
+missingindicator_inse_n_escolas,0,ganho,outros
+missingindicator_inse_pct_niveis_baixos,0,ganho,outros
+missingindicator_inse_tamanho_medio_escola,0,ganho,outros
+missingindicator_edu_saeb5_pct_lp_altos,0,ganho,outros
+missingindicator_edu_regularidade_docente_baixa,0,ganho,outros
+missingindicator_edu_reprovacao_ai_lag1,0,ganho,outros
+missingindicator_edu_abandono_ai_lag1,0,ganho,outros
+missingindicator_edu_saeb5_pct_lp_baixos,0,ganho,outros
+missingindicator_edu_aprovacao_ai_lag1,0,ganho,outros
+missingindicator_ses_fecundidade_total,0,ganho,outros
+missingindicator_ses_prop_mae_sem_fundamental,0,ganho,outros
+missingindicator_ses_prop_resp_sem_fundamental,0,ganho,outros
+missingindicator_ses_prop_domicilio_denso,0,ganho,outros
+missingindicator_ses_prop_vulneravel,0,ganho,outros
+missingindicator_ses_gini,0,ganho,outros
+missingindicator_ses_log_renda_per_capita,0,ganho,outros
+missingindicator_ses_idhm_educacao,0,ganho,outros
+missingindicator_ses_ivs_infra_urbana,0,ganho,outros
+missingindicator_ses_ivs_renda_trabalho,0,ganho,outros
+missingindicator_ses_ivs_capital_humano,0,ganho,outros
+missingindicator_ses_ivs,0,ganho,outros
+missingindicator_edu_ideb_imputado_uf,0,ganho,outros
+missingindicator_edu_ideb_ai_publica_imputado,0,ganho,outros
+missingindicator_edu_ideb_ai_uf,0,ganho,outros
+missingindicator_ses_mortalidade_infantil,0,ganho,outros
+missingindicator_fin_pct_desp_ens_fund_sobre_educ,0,ganho,outros
+missingindicator_fin_pct_fundeb_educ_infantil,0,ganho,outros
+missingindicator_fin_pct_fundeb_ens_fund,0,ganho,outros
+missingindicator_fin_pct_fundeb_nao_aplicado,0,ganho,outros
+missingindicator_fin_desp_professor_por_aluno,0,ganho,outros
+missingindicator_fin_pct_mde_sobre_impostos,0,ganho,outros
+missingindicator_fin_invest_aluno_educ_basica,0,ganho,outros
+missingindicator_fin_invest_aluno_ens_fund,0,ganho,outros
+missingindicator_ses_taxa_atraso_2anos_fund,0,ganho,outros
+missingindicator_ses_taxa_freq_escola_5_6,0,ganho,outros
+missingindicator_ses_prop_pobreza_criancas,0,ganho,outros
+missingindicator_ses_taxa_desocupacao,0,ganho,outros
+missingindicator_ses_prop_crianca_fora_escola,0,ganho,outros
+missingindicator_ses_expectativa_anos_estudo,0,ganho,outros
+missingindicator_fin_pct_complementacao_uniao,0,ganho,outros
+missingindicator_fin_pct_ens_fund_sobre_educacao,0,ganho,outros
