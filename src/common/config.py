@@ -17,6 +17,7 @@ with open(_CONFIG_PATH, encoding="utf-8") as _f:
 # --- GCP ---------------------------------------------------------------------
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID", CFG["gcp"]["project_id"])
 LOCATION = CFG["gcp"]["location"]
+BUCKET = CFG["gcp"]["bucket"]
 DATASETS = CFG["gcp"]["datasets"]
 MAX_BYTES_BILLED = int(CFG["finops"]["maximum_bytes_billed"])
 

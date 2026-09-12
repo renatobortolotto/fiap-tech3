@@ -136,5 +136,34 @@ artificiais. A camada de streaming continua válida como demonstração de arqui
 
 ---
 
+---
+
+## 6. O identificador de escola é anônimo: todo enriquecimento externo é municipal
+
+**Descoberta.** `silver.alunos.id_escola` **não é o código INEP da escola**. É uma
+chave substituta densa, de `60000001` a `60042811` (42.811 escolas), com prefixo único
+`"60"` — enquanto códigos INEP reais começam pelo código IBGE da UF (11 = RO, 31 = MG…).
+O `id_municipio`, em contraste, é IBGE genuíno de 7 dígitos (26 prefixos de UF distintos).
+
+**Verificação.** Cruzando os 42.811 identificadores contra
+`basedosdados.br_inep_censo_escolar.escola` (2023): **0 correspondências**. O INEP
+anonimizou a escola nos microdados de alfabetização.
+
+**Consequências.**
+
+1. Fontes externas com grão escolar — INSE por escola, infraestrutura do Censo Escolar,
+   indicadores educacionais por escola, IDEB por escola — **não podem ser ligadas ao
+   aluno**. O INSE por escola seria provavelmente a feature socioeconômica mais forte
+   do projeto, e foi perdido por essa limitação da fonte.
+2. O contorno adotado: **agregar as fontes escolares ao grão (ano, município, rede)**,
+   que é ligável com cobertura de 100 %. Perde-se a variação entre escolas de um mesmo
+   município; preserva-se a variação entre municípios — que, como mostra §3, é justamente
+   a parcela estruturalmente previsível do fenômeno.
+3. O histórico da própria escola (`esc_lag_*`) continua disponível, porque é calculado
+   *dentro* da base, onde a chave substituta é consistente entre 2023 e 2024.
+
+Esta é uma limitação da fonte, não uma escolha de projeto, e está registrada como tal na
+seção de limitações do README.
+
 *(Seções seguintes — features externas, escolha de algoritmo e interpretação — são
 acrescentadas conforme as etapas são concluídas.)*
