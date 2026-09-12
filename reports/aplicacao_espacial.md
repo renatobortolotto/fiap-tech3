@@ -13,7 +13,7 @@ A predição individual de alfabetização tem teto baixo: o desfecho de uma cri
 | viés | -0,93 p.p. |
 | R² | 0,536 |
 
-![calibração municipal](../images/20_calibracao_municipal.png)
+![calibração municipal](../images/20_calibracao_municipal_espacial.png)
 
 ## Quais municípios apresentam maior risco educacional
 
@@ -43,7 +43,7 @@ O risco absoluto em geral apenas reflete a pobreza do território. O **resíduo*
 
 Mas o resíduo bruto tem um defeito, e ele apareceu na primeira versão desta análise: **confunde gestão municipal com deriva do estado inteiro**. Como o Rio Grande do Sul caiu 18,9 p.p. entre 2023 e 2024, municípios gaúchos ocupavam 4 das 10 piores posições — por um motivo que nada tem a ver com as redes municipais. A coluna reportada aqui é o **resíduo ajustado**: o resíduo menos a mediana do resíduo da própria UF. O que sobra é o desvio do município em relação aos seus pares estaduais.
 
-![resíduos](../images/21_residuos_municipais.png)
+![resíduos](../images/21_residuos_municipais_espacial.png)
 
 ### Abaixo dos pares estaduais
 
@@ -79,15 +79,17 @@ Mas o resíduo bruto tem um defeito, e ele apareceu na primeira versão desta an
 
 Agrupamento em 5 perfis por **contexto** (vulnerabilidade, demografia, INSE, docência, infraestrutura, financiamento). O alvo ficou deliberadamente de fora: assim a taxa de alfabetização de cada grupo é um resultado da análise, não o critério que a produziu.
 
-![grupos](../images/22_grupos_municipais.png)
+![grupos](../images/22_grupos_municipais_espacial.png)
 
-| grupo | municípios | % alfabetizados |
-|---|---:|---:|
-| 1 | 191 | 51,7% |
-| 2 | 367 | 58,8% |
-| 3 | 1 | 59,6% |
-| 4 | 321 | 65,3% |
-| 5 | 373 | 69,4% |
+Cada perfil é descrito pelas variáveis em que mais se afasta da média dos grupos (↑ acima, ↓ abaixo):
+
+| grupo | municípios | % alfabetizados | o que caracteriza |
+|---|---:|---:|---|
+| 1 | 191 | 51,7% | ↑ ses_share_pop_5a9 · ↓ ses_idade_mediana · ↑ edu_docentes_superior_ai · ↓ inf_pct_internet_aprendizagem |
+| 2 | 367 | 58,8% | ↓ ses_log_renda_per_capita · ↓ inse_medio · ↑ ses_taxa_pbf · ↓ ses_taxa_alfab_adultos_25a44 |
+| 3 | 1 | 59,6% | ↑ fin_invest_aluno_ens_fund · ↑ inf_pct_internet_aprendizagem · ↓ edu_docentes_superior_ai · ↑ ses_taxa_alfab_adultos_25a44 |
+| 4 | 321 | 65,3% | ↑ edu_tdi_anos_iniciais · ↑ ses_idhm_educacao · ↑ ses_log_renda_per_capita · ↓ ses_taxa_pbf |
+| 5 | 373 | 69,4% | ↓ inf_alunos_por_turma_ai · ↓ edu_tdi_anos_iniciais · ↑ ses_idade_mediana · ↑ inse_medio |
 
 ## Quais municípios podem não atingir a meta
 
@@ -119,5 +121,7 @@ As 15 maiores lacunas entre a taxa prevista e a meta pactuada (municípios com �
 | Solânea | PB | 187 | 78,8% | 62,4% | **-16,3 p.p.** | 100,0% |
 | Parnarama | MA | 322 | 80,0% | 63,7% | **-16,3 p.p.** | 100,0% |
 | Sapiranga | RS | 826 | 73,9% | 57,6% | **-16,3 p.p.** | 100,0% |
+
+> **Por que RS domina esta lista.** Não é artefato: as metas do Compromisso Nacional foram pactuadas sobre o resultado de 2023 (§ decisões analíticas). Onde o estado recuou entre 2023 e 2024, os municípios ficaram com metas calibradas num patamar que a rede deixou de sustentar — e a lacuna projetada cresce por essa razão, não por piora relativa de gestão. Para a leitura de gestão, use o **resíduo ajustado** da seção anterior.
 
 > **Ressalva estatística.** O cálculo supõe independência condicional entre alunos. Como colegas de escola compartilham choques não observados, o erro-padrão real é maior e estas probabilidades são mais extremas do que deveriam — em municípios grandes elas saturam em 100%, o que torna a própria probabilidade inútil para ordenar. Por isso a tabela é ordenada pela **lacuna em pontos percentuais**, que não satura. A ordenação é confiável; a magnitude da probabilidade, não.

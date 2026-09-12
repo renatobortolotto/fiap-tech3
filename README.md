@@ -621,8 +621,8 @@ município:
 | `ter_mesorregiao` | 0,0026 |
 | *cada uma das outras 122 variáveis* | < 0,001 |
 
-**A ablação** diz que nada disso é insubstituível. Removendo cada bloco temático
-inteiro e **retreinando**:
+**A ablação** diz que, *neste desenho*, nada disso é insubstituível. Removendo cada
+bloco temático inteiro e **retreinando** (Modelo A — treino 2023, teste 2024):
 
 | bloco removido | features restantes | ROC AUC | queda |
 |---|---:|---:|---:|
@@ -637,7 +637,8 @@ inteiro e **retreinando**:
 | município (financiamento) | 111 | 0,6341 | −0,0004 |
 
 Remover `id_municipio` e `sigla_uf` — as variáveis que a permutação aponta como
-dominantes — custa **0,0010**. Nenhum bloco, de nenhum tamanho, vale mais que 0,0015.
+dominantes — custa **0,0010**. No Modelo A, nenhum bloco, de nenhum tamanho, vale mais
+que 0,0015. (No Modelo B a história é outra, e o contraste é o assunto de §8.10.)
 
 **Não há contradição: as duas métricas respondem a perguntas diferentes.** A permutação
 pergunta *"em que este modelo ajustado se apoia?"*; a ablação pergunta *"que
@@ -685,6 +686,47 @@ vias para o mesmo sinal: a identidade do município, quando disponível, e o **c
 regional mais indicadores defasados**, quando não. As duas funcionam. O que ele não
 consegue é operar quando *nenhuma* das duas está calibrada — o caso de um estado
 inteiramente novo, onde a AUC cai para 0,568.
+
+### 8.10 A mesma variável pode ajudar ou atrapalhar — depende da pergunta
+
+A ablação do Modelo B fecha o argumento de um jeito que a do Modelo A não conseguia,
+porque ali os blocos eram todos praticamente substituíveis. Aqui eles se separam:
+
+| bloco removido | features restantes | ROC AUC | queda |
+|---|---:|---:|---:|
+| **município (educacional)** — o histórico t-1 | 128 | 0,6425 | **+0,0088** |
+| educacional (IDEB e SAEB defasados) | 106 | 0,6478 | +0,0035 |
+| escola (socioeconômico — INSE) | 127 | 0,6486 | +0,0026 |
+| UF | 135 | 0,6494 | +0,0018 |
+| município (socioeconômico) | 99 | 0,6494 | +0,0018 |
+| aluno | 135 | 0,6503 | +0,0010 |
+| município (financiamento) | 122 | 0,6504 | +0,0008 |
+| *(modelo completo)* | 137 | 0,6512 | — |
+| território | 131 | 0,6535 | **−0,0022** |
+| escola (infraestrutura) | 115 | 0,6560 | **−0,0047** |
+| **identificação geográfica** | 135 | 0,6567 | **−0,0055** |
+
+Duas leituras, e a segunda é o achado:
+
+**Primeira — quanto vale ter memória histórica.** Retirar o bloco `mun_lag_*` custa
+**0,0088 de AUC**, mais que o dobro do segundo colocado. É a resposta limpa à pergunta
+"quanto vale conhecer o passado do município?", medida no mesmo treino e no mesmo
+teste — que é por que ela não podia ser obtida comparando a AUC do Modelo A com a do B
+(§4.3).
+
+**Segunda — `id_municipio` deixa de ajudar e passa a atrapalhar.** No Modelo A ela é a
+variável mais importante por permutação (0,0600). No Modelo B, **removê-la melhora o
+modelo em 0,0055**. Não há contradição: quando os municípios de teste são novos, o
+*target encoding* devolve a média global para todos eles, e o que era informação vira
+ruído — o modelo gasta divisões numa coluna constante. O mesmo vale, em menor grau,
+para a infraestrutura escolar (−0,0047) e o território (−0,0022).
+
+**A consequência prática é direta:** *não existe um conjunto de features ótimo em
+abstrato*. Para prever em municípios já avaliados, a identidade é o ativo mais valioso.
+Para prever em municípios novos, ela deve ser **retirada** — e um Modelo B enxuto, sem
+identificação geográfica, infraestrutura e território, chegaria a AUC ≈ 0,66, acima do
+modelo completo. O conjunto de features é parte da especificação do problema, não uma
+propriedade dos dados.
 
 ![ablação por bloco](images/13_ablacao_por_bloco.png)
 
@@ -820,6 +862,13 @@ colunas atuais.
 **Recalibrar a cada onda.** O viés medido de −3,3 p.p. (§7.4) é consequência direta de
 treinar no passado: 2024 foi melhor que 2023. Em uso recorrente, uma recalibração
 anual sobre a onda mais recente corrige o nível sem retreinar o modelo inteiro.
+
+**Selecionar features por desenho, e não uma vez só.** A ablação do Modelo B (§8.10)
+mostra que três blocos — identificação geográfica, infraestrutura escolar e território
+— **pioram** o modelo quando o alvo são municípios novos, somando 0,012 de AUC
+desperdiçados. Um Modelo B enxuto chegaria a AUC ≈ 0,66, acima do modelo completo. A
+seleção de features deveria ser parte do desenho de cada pergunta, com validação
+aninhada para não virar sobreajuste ao conjunto de teste.
 
 **Modelo hierárquico (multinível).** A estrutura aluno ⊂ escola ⊂ município é
 naturalmente hierárquica. Um modelo de efeitos mistos estimaria a variância em cada
