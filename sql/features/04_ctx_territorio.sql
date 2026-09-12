@@ -15,9 +15,10 @@ WITH uf_lag AS (
         ano + 1 AS ano_alvo,
         sigla_uf,
         taxa AS uf_lag_taxa,
-        gap  AS uf_lag_gap_meta,
-        pct_municipios_atingiram_meta AS uf_lag_pct_mun_na_meta,
         ranking_taxa AS uf_lag_ranking
+        -- `gap` e `pct_municipios_atingiram_meta` NÃO entram: são 100% NULL em 2023
+        -- (70 de 70 linhas), porque a trajetória de metas só começa em 2024 — e 2023
+        -- é o único ano disponível como defasagem. Verificado.
     FROM `{gold}.panorama_uf`
     WHERE rede = 'Pública (Estadual e Municipal)'
 ),
@@ -36,8 +37,6 @@ SELECT
     d.capital_uf         AS ter_capital_uf,
     d.amazonia_legal     AS ter_amazonia_legal,
     u.uf_lag_taxa,
-    u.uf_lag_gap_meta,
-    u.uf_lag_pct_mun_na_meta,
     u.uf_lag_ranking
 FROM anos a
 CROSS JOIN `{silver}.dim_municipio` d

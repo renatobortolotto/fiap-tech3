@@ -26,26 +26,40 @@ WITH desempenho_municipio AS (
     GROUP BY ano, id_municipio
 ),
 indicador_oficial AS (
-    -- Indicador oficial INEP (2º ano, rede Municipal) + distribuição por nível de leitura.
-    -- Níveis 0-2 = não alfabetizado / leitura incipiente; 6-8 = leitura consolidada.
+    -- Indicador oficial INEP do 2º ano, rede Municipal.
+    --
+    -- As colunas `proporcao_aluno_nivel_0..8` (distribuição por nível de leitura)
+    -- seriam as features mais ricas desta fonte, mas NÃO são extraídas: são 100%
+    -- NULL em 2023 (11.547 de 11.547 linhas municipais), e 2023 é o único ano que
+    -- pode servir de defasagem. Entrariam na ABT 100% ausentes — verificado.
     SELECT
         ano,
         id_municipio,
         taxa_alfabetizacao,
-        media_portugues,
-        proporcao_aluno_nivel_0 + proporcao_aluno_nivel_1 + proporcao_aluno_nivel_2
-            AS prop_niveis_baixos,
-        proporcao_aluno_nivel_6 + proporcao_aluno_nivel_7 + proporcao_aluno_nivel_8
-            AS prop_niveis_altos
+        media_portugues
     FROM `{silver}.indicador_municipio`
     WHERE serie = 2 AND rede = 'Municipal'
     QUALIFY ROW_NUMBER() OVER (PARTITION BY ano, id_municipio ORDER BY ano) = 1
 ),
 metas AS (
     -- Metas pactuadas no Compromisso Nacional Criança Alfabetizada.
-    -- `nivel_alfabetizacao` é a faixa em que o MEC classificou o município.
-    -- A meta do ano-alvo NÃO é vazamento: é um compromisso definido a priori,
-    -- conhecido antes do resultado.
+    --
+    -- ATENÇÃO — VAZAMENTO MEDIDO. A intuição inicial era que a meta, por ser um
+    -- compromisso definido a priori, não seria vazamento. A medição desmentiu:
+    -- a meta de 2024 correlaciona 0,968 com a taxa OBSERVADA de 2023, e
+    -- `nivel_alfabetizacao` correlaciona 0,955 (n = 4.336 municípios com >= 30
+    -- alunos). As metas foram calculadas A PARTIR do resultado de 2023, que é o
+    -- ano-base do Compromisso — são, portanto, o resultado de 2023 reescalado.
+    -- As linhas de 2023 e 2024 da tabela trazem metas IDÊNTICAS (0 divergências
+    -- em 5.352 municípios), confirmando que foram pactuadas uma única vez.
+    --
+    -- Consequência: as metas são uma feature LEGÍTIMA e DEFASADA para o ano-alvo
+    -- 2024 (correlação cai para 0,675, a persistência natural), e VAZAMENTO para
+    -- o ano-alvo 2023. Por isso recebem o prefixo `mun_lag_`, que as remove
+    -- automaticamente do desenho temporal. Ver docs/decisoes-analiticas.md §7.
+    --
+    -- `meta_alfabetizacao_2030` é descartada: vale 80,0 para todos os 5.352
+    -- municípios (variância zero, correlação indefinida).
     SELECT
         ano,
         id_municipio,
@@ -67,27 +81,23 @@ SELECT
     d.n_escolas             AS mun_lag_n_escolas,
     io.taxa_alfabetizacao   AS mun_lag_taxa_oficial,
     io.media_portugues      AS mun_lag_media_portugues,
-    io.prop_niveis_baixos   AS mun_lag_prop_niveis_baixos,
-    io.prop_niveis_altos    AS mun_lag_prop_niveis_altos,
 
-    -- Bloco B: metas e política pública (definidas a priori, sem vazamento)
+    -- Bloco B: metas pactuadas — DEFASADAS (derivam do resultado de 2023, ver CTE acima)
     CASE d.ano + 1
         WHEN 2024 THEN m.meta_alfabetizacao_2024
         WHEN 2025 THEN m.meta_alfabetizacao_2025
         WHEN 2026 THEN m.meta_alfabetizacao_2026
-    END                       AS mun_meta_ano_alvo,
-    m.meta_alfabetizacao_2030 AS mun_meta_2030,
-    m.nivel_alfabetizacao     AS mun_nivel_alfabetizacao,
+    END                       AS mun_lag_meta_ano_alvo,
+    m.nivel_alfabetizacao     AS mun_lag_nivel_alfabetizacao,
     m.percentual_participacao AS mun_lag_pct_participacao,
 
     -- Bloco C: distância até a meta, medida com o resultado de t-1
+    -- (também defasada, pela mesma razão do bloco B)
     io.taxa_alfabetizacao - CASE d.ano + 1
         WHEN 2024 THEN m.meta_alfabetizacao_2024
         WHEN 2025 THEN m.meta_alfabetizacao_2025
         WHEN 2026 THEN m.meta_alfabetizacao_2026
-    END                       AS mun_lag_gap_meta_ano,
-    io.taxa_alfabetizacao - m.meta_alfabetizacao_2030
-                              AS mun_lag_gap_meta_2030
+    END                       AS mun_lag_gap_meta_ano
 FROM desempenho_municipio d
 LEFT JOIN indicador_oficial io
     ON io.ano = d.ano AND io.id_municipio = d.id_municipio

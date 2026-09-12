@@ -5,6 +5,7 @@
 
 gcp:
   project_id: fiap-data-engineering   # projeto construído na Fase 2
+  bucket: fiap-data-engineering-datalake   # data lake da Fase 2 (staging da exportação)
   location: US                        # co-localizado com `basedosdados`
   datasets:
     bronze: bronze
@@ -20,6 +21,22 @@ finops:
 fontes_externas:
   basedosdados_alfabetizacao: basedosdados.br_inep_avaliacao_alfabetizacao
   diretorio_municipio: basedosdados.br_bd_diretorios_brasil.municipio
+  # Fontes públicas de enriquecimento (todas ligadas por id_municipio — ver §6 das
+  # decisões analíticas: o id_escola dos microdados é anonimizado)
+  basedosdados_censo_escolar: basedosdados.br_inep_censo_escolar
+  basedosdados_indicadores_edu: basedosdados.br_inep_indicadores_educacionais
+  basedosdados_inse: basedosdados.br_inep_indicador_nivel_socioeconomico
+  basedosdados_ideb: basedosdados.br_inep_ideb
+  basedosdados_saeb: basedosdados.br_inep_saeb
+  basedosdados_ibge_pib: basedosdados.br_ibge_pib
+  basedosdados_ibge_populacao: basedosdados.br_ibge_populacao
+  basedosdados_ibge_censo2022: basedosdados.br_ibge_censo_2022
+  basedosdados_ipea_avs: basedosdados.br_ipea_avs
+  basedosdados_onu_adh: basedosdados.mundo_onu_adh
+  basedosdados_mc_indicadores: basedosdados.br_mc_indicadores
+  basedosdados_cgu_beneficios: basedosdados.br_cgu_beneficios_cidadao
+  basedosdados_fundeb: basedosdados.br_fnde_fundeb
+  basedosdados_siconfi: basedosdados.br_me_siconfi
 
 modelagem:
   # Alvo e população
