@@ -75,7 +75,10 @@ notebooks: ## Regenera os notebooks a partir dos módulos de src/
 testes: ## Testes automatizados (antivazamento e integridade da pipeline)
 	$(PYTHON) -m pytest tests/ -v
 
-tudo: features dados eda modelo-a modelo-b figuras comparar interpretar aplicacao ## Pipeline completa
+# `tunar` fica FORA do alvo `tudo` de propósito: a busca de hiperparâmetros leva
+# dezenas de minutos e não é pré-requisito de nenhum outro alvo — os candidatos já
+# vêm com parâmetros razoáveis em src/modeling/candidatos.py. Rode-a à parte.
+tudo: features dados eda modelo-a modelo-b figuras comparar interpretar aplicacao ## Pipeline completa (sem a busca de hiperparâmetros)
 
 limpar: ## Remove artefatos locais (dados e modelos são reproduzíveis)
 	rm -rf data/raw/* data/interim/* data/processed/* models/*.joblib

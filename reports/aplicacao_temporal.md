@@ -13,7 +13,7 @@ A predição individual de alfabetização tem teto baixo: o desfecho de uma cri
 | viés | -3,28 p.p. |
 | R² | 0,447 |
 
-![calibração municipal](../images/20_calibracao_municipal.png)
+![calibração municipal](../images/20_calibracao_municipal_temporal.png)
 
 ## Quais municípios apresentam maior risco educacional
 
@@ -43,7 +43,7 @@ O risco absoluto em geral apenas reflete a pobreza do território. O **resíduo*
 
 Mas o resíduo bruto tem um defeito, e ele apareceu na primeira versão desta análise: **confunde gestão municipal com deriva do estado inteiro**. Como o Rio Grande do Sul caiu 18,9 p.p. entre 2023 e 2024, municípios gaúchos ocupavam 4 das 10 piores posições — por um motivo que nada tem a ver com as redes municipais. A coluna reportada aqui é o **resíduo ajustado**: o resíduo menos a mediana do resíduo da própria UF. O que sobra é o desvio do município em relação aos seus pares estaduais.
 
-![resíduos](../images/21_residuos_municipais.png)
+![resíduos](../images/21_residuos_municipais_temporal.png)
 
 ### Abaixo dos pares estaduais
 
@@ -79,15 +79,17 @@ Mas o resíduo bruto tem um defeito, e ele apareceu na primeira versão desta an
 
 Agrupamento em 5 perfis por **contexto** (vulnerabilidade, demografia, INSE, docência, infraestrutura, financiamento). O alvo ficou deliberadamente de fora: assim a taxa de alfabetização de cada grupo é um resultado da análise, não o critério que a produziu.
 
-![grupos](../images/22_grupos_municipais.png)
+![grupos](../images/22_grupos_municipais_temporal.png)
 
-| grupo | municípios | % alfabetizados |
-|---|---:|---:|
-| 1 | 622 | 52,6% |
-| 2 | 1.138 | 57,9% |
-| 3 | 763 | 60,5% |
-| 4 | 1.370 | 67,6% |
-| 5 | 1.080 | 69,9% |
+Cada perfil é descrito pelas variáveis em que mais se afasta da média dos grupos (↑ acima, ↓ abaixo):
+
+| grupo | municípios | % alfabetizados | o que caracteriza |
+|---|---:|---:|---|
+| 1 | 622 | 52,6% | ↑ ses_share_pop_5a9 · ↓ inf_pct_internet_aprendizagem · ↑ edu_docentes_superior_ai · ↓ ses_idade_mediana |
+| 2 | 1.138 | 57,9% | ↑ ses_taxa_pbf · ↓ ses_log_renda_per_capita · ↓ inse_medio · ↓ ses_taxa_alfab_adultos_25a44 |
+| 3 | 763 | 60,5% | ↑ edu_tdi_anos_iniciais · ↑ inf_alunos_por_turma_ai · ↑ inf_pct_internet_aprendizagem · ↑ ses_taxa_alfab_adultos_25a44 |
+| 4 | 1.370 | 67,6% | ↑ ses_idhm_educacao · ↑ ses_log_renda_per_capita · ↑ inse_medio · ↓ ses_taxa_pbf |
+| 5 | 1.080 | 69,9% | ↑ fin_invest_aluno_ens_fund · ↓ edu_tdi_anos_iniciais · ↓ inf_alunos_por_turma_ai · ↑ ses_idade_mediana |
 
 ## Quais municípios podem não atingir a meta
 

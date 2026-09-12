@@ -1,0 +1,6 @@
+grupo,n_municipios,taxa_observada,caracteristicas
+1,622,0.5257453376889647,↑ ses_share_pop_5a9 · ↓ inf_pct_internet_aprendizagem · ↑ edu_docentes_superior_ai · ↓ ses_idade_mediana
+2,1138,0.5787570097939738,↑ ses_taxa_pbf · ↓ ses_log_renda_per_capita · ↓ inse_medio · ↓ ses_taxa_alfab_adultos_25a44
+3,763,0.6048365929889952,↑ edu_tdi_anos_iniciais · ↑ inf_alunos_por_turma_ai · ↑ inf_pct_internet_aprendizagem · ↑ ses_taxa_alfab_adultos_25a44
+4,1370,0.676245099091632,↑ ses_idhm_educacao · ↑ ses_log_renda_per_capita · ↑ inse_medio · ↓ ses_taxa_pbf
+5,1080,0.6994581316372409,↑ fin_invest_aluno_ens_fund · ↓ edu_tdi_anos_iniciais · ↓ inf_alunos_por_turma_ai · ↑ ses_idade_mediana
