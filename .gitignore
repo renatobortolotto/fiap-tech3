@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.ipynb_checkpoints/
+
+# Dados (extraídos do BigQuery — reproduzíveis via `make data`)
+data/raw/*
+data/interim/*
+data/processed/*
+!data/**/.gitkeep
+
+# Modelos treinados (reproduzíveis via `make train`)
+models/*
+!models/.gitkeep
+
+# Credenciais
+*.json
+!config/*.json
+.env
+
+# Sistema
+.DS_Store

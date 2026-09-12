@@ -1,0 +1,31 @@
+# --- Acesso a dados (BigQuery / camada Gold da Fase 2) ---
+google-cloud-bigquery>=3.25
+db-dtypes>=1.2
+pyarrow>=15.0
+PyYAML>=6.0
+
+# --- Núcleo científico ---
+numpy>=1.26
+pandas>=2.0
+scipy>=1.11
+
+# --- Machine Learning ---
+scikit-learn>=1.4        # TargetEncoder, HistGradientBoosting, pipelines
+lightgbm>=4.3
+xgboost>=2.0
+optuna>=3.6              # otimização de hiperparâmetros
+statsmodels>=0.14        # validação estatística
+
+# --- Interpretabilidade ---
+shap>=0.45
+
+# --- Visualização ---
+matplotlib>=3.8
+seaborn>=0.13
+
+# --- Notebooks ---
+jupyter>=1.0
+ipykernel>=6.29
+
+# --- Persistência de modelos ---
+joblib>=1.4

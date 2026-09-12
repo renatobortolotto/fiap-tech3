@@ -1,0 +1,45 @@
+# =============================================================================
+# Configuração central — Tech Challenge Fase 3 (FIAP/POSTECH)
+# Predição e inteligência analítica para alfabetização no Brasil
+# =============================================================================
+
+gcp:
+  project_id: fiap-data-engineering   # projeto construído na Fase 2
+  location: US                        # co-localizado com `basedosdados`
+  datasets:
+    bronze: bronze
+    silver: silver
+    gold: gold
+    ops: ops
+    features: features                # NOVO na Fase 3: feature store analítica
+
+finops:
+  # Teto de bytes faturados por consulta (10 GiB) — trava de segurança de custo
+  maximum_bytes_billed: 10737418240
+
+fontes_externas:
+  basedosdados_alfabetizacao: basedosdados.br_inep_avaliacao_alfabetizacao
+  diretorio_municipio: basedosdados.br_bd_diretorios_brasil.municipio
+
+modelagem:
+  # Alvo e população
+  alvo: alfabetizado
+  # Somente alunos efetivamente avaliados: presenca=TRUE e preenchimento_caderno=TRUE.
+  # Fora dessa população o rótulo é determinístico (ausente => não alfabetizado),
+  # o que tornaria o modelo um detector de ausência em vez de um modelo pedagógico.
+  populacao_avaliada: true
+
+  # Desenho temporal: treino no ano anterior, teste no ano seguinte (out-of-time).
+  ano_treino: 2023
+  ano_teste: 2024
+
+  # Reprodutibilidade
+  random_state: 42
+  n_folds: 5
+
+  # Colunas proibidas — data leakage direto (ver docs/decisoes-analiticas.md)
+  colunas_vazadas:
+    - proficiencia            # alvo é exatamente proficiencia >= 743 (0 discordâncias)
+    - presenca                # presenca=FALSE => alfabetizado=FALSE sempre
+    - preenchimento_caderno   # idem
+    - id_aluno                # identificador, sem poder preditivo generalizável
