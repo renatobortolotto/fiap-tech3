@@ -90,8 +90,10 @@ def main(argv: list | None = None) -> int:
 
     # --- Relatório -----------------------------------------------------------
     top_risco = ranking[ranking["n_alunos"] >= 100].head(15)
-    piores_residuos = ranking[ranking["n_alunos"] >= 100].nsmallest(10, "residuo")
-    melhores_residuos = ranking[ranking["n_alunos"] >= 100].nlargest(10, "residuo")
+    col_res = "residuo_ajustado" if "residuo_ajustado" in ranking.columns else "residuo"
+    elegiveis = ranking[ranking["n_alunos"] >= 100]
+    piores_residuos = elegiveis.nsmallest(10, col_res)
+    melhores_residuos = elegiveis.nlargest(10, col_res)
 
     md = [
         f"# Aplicação estratégica — desenho `{args.desenho}`",
@@ -127,32 +129,40 @@ def main(argv: list | None = None) -> int:
 
     md += [
         "",
-        "## Quem foge do próprio contexto — a leitura acionável",
+        "## Quem foge dos próprios pares — a leitura acionável",
         "",
         "O risco absoluto em geral apenas reflete a pobreza do território. O **resíduo** "
-        "(observado − previsto) isola o que o contexto NÃO explica: resíduo muito "
-        "negativo aponta problema de gestão; muito positivo aponta prática que merece "
-        "ser estudada e replicada.",
+        "(observado − previsto) isola o que o contexto NÃO explica.",
+        "",
+        "Mas o resíduo bruto tem um defeito, e ele apareceu na primeira versão desta "
+        "análise: **confunde gestão municipal com deriva do estado inteiro**. Como o "
+        "Rio Grande do Sul caiu 18,9 p.p. entre 2023 e 2024, municípios gaúchos "
+        "ocupavam 4 das 10 piores posições — por um motivo que nada tem a ver com as "
+        "redes municipais. A coluna reportada aqui é o **resíduo ajustado**: o resíduo "
+        "menos a mediana do resíduo da própria UF. O que sobra é o desvio do município "
+        "em relação aos seus pares estaduais.",
         "",
         f"![resíduos](../images/{f_resid.split('/')[-1]})",
         "",
-        "### Abaixo do esperado",
+        "### Abaixo dos pares estaduais",
         "",
-        "| município | UF | alunos | observado | previsto | resíduo |",
-        "|---|---|---:|---:|---:|---:|",
+        "| município | UF | alunos | observado | previsto | resíduo bruto | ajustado |",
+        "|---|---|---:|---:|---:|---:|---:|",
     ]
     for _, r in piores_residuos.iterrows():
         md.append(f"| {r['municipio']} | {r['uf']} | {_mil(r['n_alunos'])} | "
                   f"{_v(r['taxa_observada']*100, 1)}% | {_v(r['taxa_prevista']*100, 1)}% | "
-                  f"**{_v(r['residuo']*100, 1)} p.p.** |")
+                  f"{_v(r['residuo']*100, 1)} p.p. | "
+                  f"**{_v(r[col_res]*100, 1)} p.p.** |")
 
-    md += ["", "### Acima do esperado", "",
-           "| município | UF | alunos | observado | previsto | resíduo |",
-           "|---|---|---:|---:|---:|---:|"]
+    md += ["", "### Acima dos pares estaduais", "",
+           "| município | UF | alunos | observado | previsto | resíduo bruto | ajustado |",
+           "|---|---|---:|---:|---:|---:|---:|"]
     for _, r in melhores_residuos.iterrows():
         md.append(f"| {r['municipio']} | {r['uf']} | {_mil(r['n_alunos'])} | "
                   f"{_v(r['taxa_observada']*100, 1)}% | {_v(r['taxa_prevista']*100, 1)}% | "
-                  f"**+{_v(r['residuo']*100, 1)} p.p.** |")
+                  f"+{_v(r['residuo']*100, 1)} p.p. | "
+                  f"**+{_v(r[col_res]*100, 1)} p.p.** |")
 
     md += [
         "",

@@ -45,8 +45,10 @@ def ranking_risco_municipal(
     * `taxa_prevista` — média das probabilidades. É o que o modelo espera do
       município dado o seu contexto.
     * `taxa_observada` — o que de fato ocorreu.
-    * `residuo` — observado menos previsto. **É a coluna mais útil para política
-      pública**, e não o risco absoluto. Um município pobre com taxa baixa é
+    * `residuo` — observado menos previsto.
+    * `residuo_ajustado` — o resíduo menos a mediana do resíduo da própria UF. **É a
+      coluna mais útil para política pública**, e não o risco absoluto nem o resíduo
+      bruto: ela desconta a deriva estadual, que não é atribuível à gestão municipal. Um município pobre com taxa baixa é
       esperado; um município que vai MUITO PIOR do que seu contexto prevê tem um
       problema de gestão, não de pobreza — e esse é acionável. O resíduo positivo
       identifica o caminho inverso: redes que superam o próprio contexto e cujas
@@ -57,6 +59,12 @@ def ranking_risco_municipal(
     cuja oscilação é puro acaso.
     """
     dados = teste[["id_municipio", "nome_municipio", "sigla_uf", "ter_regiao", ALVO]].copy()
+    # A ABT é carregada com colunas de texto em dtype `category` (economia de memória).
+    # Categóricas não suportam concatenação nem agregação textual a jusante, e o grão
+    # aqui é o município — a economia deixou de importar. Convertidas de volta a texto.
+    for col in ("id_municipio", "nome_municipio", "sigla_uf", "ter_regiao"):
+        if str(dados[col].dtype) == "category":
+            dados[col] = dados[col].astype(str)
     dados["prob"] = np.asarray(probabilidades, dtype=float)
 
     agrupado = dados.groupby("id_municipio", observed=True).agg(
@@ -74,6 +82,17 @@ def ranking_risco_municipal(
     # Resíduo padronizado: quantos erros-padrão o município está do esperado
     agrupado["residuo_z"] = agrupado["residuo"] / agrupado["erro_padrao"].replace(0, np.nan)
     agrupado["risco"] = 1 - agrupado["taxa_prevista"]
+
+    # Resíduo LÍQUIDO DA DERIVA ESTADUAL. O resíduo bruto confunde duas coisas: o
+    # desempenho do município frente ao próprio contexto, e o deslocamento de toda a
+    # UF entre os anos. O caso é real: o Rio Grande do Sul caiu 18,9 p.p. entre 2023 e
+    # 2024, e por isso municípios gaúchos dominam a lista dos piores resíduos brutos —
+    # o que diz respeito ao estado, não à gestão de cada rede. Subtraindo a mediana do
+    # resíduo da própria UF, o que sobra é o desvio do município em relação aos seus
+    # pares estaduais. É esta a coluna com leitura de gestão.
+    mediana_uf = agrupado.groupby("uf", observed=True)["residuo"].transform("median")
+    agrupado["residuo_uf"] = mediana_uf
+    agrupado["residuo_ajustado"] = agrupado["residuo"] - mediana_uf
 
     logger.info("Ranking municipal: %d municípios com >= %d alunos avaliados",
                 len(agrupado), min_alunos)
