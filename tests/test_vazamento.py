@@ -122,3 +122,17 @@ def test_descartar_degeneradas_pega_nulos_e_constantes():
     assert mantidas == ["boa"]
     assert "100% ausente" in descartadas["toda_nula"]
     assert "constante" in descartadas["constante"]
+
+
+def test_peso_amostral_nao_e_feature():
+    """O peso do desenho amostral do INEP não entra como preditor.
+
+    Não é vazamento (r = -0,045 em 2023 e -0,066 em 2024), mas sua metodologia mudou
+    entre os anos — 13.185 valores distintos em 2023 contra 540 em 2024 — o que
+    introduziria deriva de covariável no desenho out-of-time.
+    """
+    from src.preprocessing.features import ARTEFATOS_AMOSTRAIS
+
+    feats = selecionar_features(COLUNAS_EXEMPLO + ["alu_peso_amostral"])
+    for col in ARTEFATOS_AMOSTRAIS:
+        assert col not in feats

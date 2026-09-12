@@ -52,11 +52,22 @@ def agregar_municipio(df: pd.DataFrame, min_alunos: int = MIN_ALUNOS_MUNICIPIO):
     As features de contexto são constantes dentro do município, então `first`
     recupera o valor sem distorção.
     """
-    numericas = [c for c in df.select_dtypes("number").columns if c != ALVO]
-    agg = {c: "first" for c in numericas}
-    agg[ALVO] = "mean"
-    mun = (df.groupby(["ano", "id_municipio"], observed=True)
-             .agg(**{"n_alunos": ("id_aluno", "size")}, **{k: (k, v) for k, v in agg.items()})
+    chaves = ["ano", "id_municipio"]
+    numericas = [c for c in df.select_dtypes("number").columns
+                 if c != ALVO and c not in chaves]
+    especificacao = {"n_alunos": ("id_aluno", "size"), ALVO: (ALVO, "mean")}
+    # As features de contexto são constantes dentro do município: `first` recupera
+    # o valor sem distorção. As chaves do agrupamento ficam de fora da agregação —
+    # `reset_index` as reinsere, e duplicá-las causaria colisão de nomes.
+    especificacao.update({c: (c, "first") for c in numericas})
+    # `ter_regiao` é categórica mas é necessária para as leituras regionais
+    for col in ("ter_regiao", "nome_municipio", "sigla_uf", "ter_latitude",
+                "ter_longitude"):
+        if col in df.columns and col not in especificacao:
+            especificacao[col] = (col, "first")
+
+    mun = (df.groupby(chaves, observed=True)
+             .agg(**especificacao)
              .reset_index())
     return mun[mun["n_alunos"] >= min_alunos]
 
