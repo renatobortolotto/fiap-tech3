@@ -69,26 +69,35 @@ realidade operacional — um gestor que planeja 2024 conhece o resultado de 2023
 2024.
 
 **Evidência de que a defasagem preserva sinal.** A taxa municipal é fortemente
-persistente entre anos; a escolar, quase não é:
+persistente entre anos:
 
 | Unidade | Filtro | n | corr(2023, 2024) |
 |---|---|---:|---:|
 | Município | ≥ 200 avaliados/ano | 1.404 | **0,810** |
 | Município | ≥ 50 avaliados/ano | 3.591 | 0,740 |
-| Escola | ≥ 50 avaliados/ano | 3.486 | **0,215** |
-| Escola | ≥ 20 avaliados/ano | 18.756 | 0,250 |
 
-**Interpretação — o achado analítico central do projeto.** A dispersão bruta entre
-escolas é grande (p10 = 26 % e p90 = 90 % de alfabetização em 2023), mas quase nada dela
-sobrevive ao ano seguinte. A coorte do 2º ano de uma escola típica tem poucas dezenas de
-alunos, e a taxa observada é dominada por ruído amostral. **O componente estruturalmente
-previsível da alfabetização é municipal, não escolar.** Isso alinha o modelo à unidade em
-que a política pública de fato opera — o município é quem gere a rede dos anos iniciais.
+**Correção de rumo registrada.** A primeira medição também calculou a persistência
+no grão da ESCOLA e encontrou r = 0,22 — que foi inicialmente interpretado como
+"o desempenho escolar é instável porque as coortes do 2º ano são pequenas e a taxa
+observada é dominada por ruído amostral". **Essa interpretação estava errada**, e a
+verificação da chave mostrou por quê: `id_escola` é **renumerado a cada ano**. Dos
+36.051 identificadores presentes em 2023 e 2024, apenas **864 (2,4%)** apontam para
+o mesmo município; 80,6% apenas permanecem na mesma UF, porque a numeração é
+reatribuída anualmente em blocos por unidade da federação.
 
-**Consequência de engenharia.** A taxa da escola em t-1 entra suavizada por *shrinkage*
-empírico-bayesiano em direção à média do município
-(`(alfabetizados + 30 · taxa_município) / (n + 30)`), acompanhada do tamanho da coorte,
-para que o modelo possa descontar taxas medidas em coortes pequenas.
+Ou seja, unir os dois anos por `id_escola` conecta escolas **diferentes** que por
+acaso receberam o mesmo número. O r = 0,22 não media persistência escolar: media um
+efeito de UF disfarçado. O arquivo SQL da hipótese refutada foi preservado em
+`docs/descartado/` com o registro completo.
+
+**Conclusão que fica.** Os dados **não permitem nenhuma feature longitudinal no grão
+da escola**. O único nível com histórico confiável é o município, cuja chave é o
+código IBGE genuíno e estável. Isso reforça — agora por um caminho diferente — que a
+unidade de análise deste projeto é o município.
+
+**A dispersão entre escolas continua válida** e é grande (p10 = 26% e p90 = 90% de
+alfabetização em 2023): dentro de um mesmo ano, `id_escola` agrupa corretamente os
+alunos da mesma escola. O que não existe é a ponte entre os anos.
 
 ---
 
@@ -117,6 +126,18 @@ histórico defasado descartaria 45 % dos dados e ficaria sem validação tempora
 
 A diferença entre A e B quantifica exatamente **quanto vale ter memória histórica** na
 predição — um resultado de interesse direto para política pública.
+
+**O teste out-of-time não é só "um ano depois" — a geografia muda.** Três unidades da
+federação aparecem apenas em 2024: **AC, DF e SP**. São 676 municípios novos e
+**428.119 alunos, ou 23,1% do conjunto de teste**, sem qualquer presença em 2023. Há
+também deriva real de nível nas UFs presentes nos dois anos: o Rio Grande do Sul cai
+18,9 p.p. (64,7% -> 45,8%) e Minas Gerais sobe 11,7 p.p. (60,9% -> 72,6%).
+
+Consequência para a avaliação: a métrica do teste de 2024 mistura duas coisas
+diferentes — *generalização temporal* (UFs já vistas, um ano depois) e *extrapolação
+geográfica* (UFs nunca vistas). Por isso as métricas são reportadas **estratificadas**
+nos dois grupos, além do total. Um número único aqui esconderia qual das duas
+capacidades o modelo realmente tem.
 
 **Os 23 % de alunos de 2024 sem histórico municipal** não são descartados: são municípios
 que entraram na avaliação em 2024. Recebem imputação explícita mais um indicador binário

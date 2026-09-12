@@ -1,3 +1,23 @@
+-- =============================================================================
+-- ARQUIVO DESCARTADO — mantido no repositório como registro de uma hipótese
+-- testada e REFUTADA. Não faz parte da pipeline.
+--
+-- A hipótese era usar o histórico da própria escola (t-1) como feature. Ela cai
+-- por um motivo que só aparece ao verificar a chave: `id_escola` é RENUMERADO a
+-- cada ano nos microdados de alfabetização.
+--
+-- Verificação: dos 36.051 identificadores de escola presentes em 2023 E 2024,
+-- apenas 864 (2,4%) apontam para o MESMO município; 80,6% permanecem na mesma UF.
+-- Ou seja, a numeração é reatribuída anualmente em blocos por UF.
+--
+-- O que parecia "persistência fraca do desempenho escolar" (r = 0,22) era, na
+-- verdade, um efeito de UF disfarçado: unir 2023 e 2024 por `id_escola` conecta
+-- escolas DIFERENTES que por acaso receberam o mesmo número.
+--
+-- Conclusão incorporada ao projeto: os dados não permitem NENHUMA feature
+-- longitudinal no grão da escola. Ver docs/decisoes-analiticas.md §3 e §6.
+-- =============================================================================
+
 -- features.ctx_escola_lag — contexto da ESCOLA, defasado em 1 ano
 --
 -- Mesmo princípio de defasagem da tabela municipal: o conteúdo vem de

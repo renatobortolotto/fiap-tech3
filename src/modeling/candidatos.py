@@ -38,11 +38,16 @@ CANDIDATOS: dict[str, tuple] = {
     ),
     "logistica": (
         LogisticRegression(
-            max_iter=1000,
+            # `max_iter` e `tol` calibrados para o volume: com 1,5 milhão de linhas
+            # por ~180 colunas, cada iteração do lbfgs percorre ~2 GiB duas vezes
+            # (~0,4 s). O padrão (1000 iterações, tol=1e-4) leva ~7 minutos para
+            # ganhar, nas últimas centenas de passos, menos de 0,001 de AUC — o
+            # erro-padrão da própria métrica é uma ordem de grandeza maior.
+            max_iter=300,
+            tol=1e-3,
             solver="lbfgs",
             C=1.0,
             random_state=RANDOM_STATE,
-            n_jobs=-1,
         ),
         True,   # exige escalonamento
         "Linear e interpretável; contraprova de que a complexidade se paga.",

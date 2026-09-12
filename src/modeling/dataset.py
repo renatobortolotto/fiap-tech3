@@ -60,6 +60,14 @@ def extrair_abt(destino: Path = CAMINHO_ABT, forcar: bool = False) -> Path:
     prefixo = f"gs://{BUCKET}/fase3/abt_aluno"
     logger.info("Exportando %s -> %s", tabela, prefixo)
 
+    # ATENÇÃO: `overwrite = true` sobrescreve apenas os arquivos que ESTA exportação
+    # escreve. Se a exportação anterior gerou mais partes que a atual, as partes
+    # extras sobrevivem e entram no glob do download — foi exatamente o que ocorreu
+    # aqui: uma parte remanescente de um esquema antigo somou 46.482 linhas e
+    # ressuscitou 4 colunas já removidas. Limpar o prefixo antes é obrigatório.
+    subprocess.run(["gsutil", "-q", "-m", "rm", "-f", f"{prefixo}/parte-*.parquet"],
+                   check=False)
+
     client = bq_client()
     client.query(f"""
         EXPORT DATA OPTIONS(
@@ -77,18 +85,42 @@ def extrair_abt(destino: Path = CAMINHO_ABT, forcar: bool = False) -> Path:
         partes = sorted(Path(tmp).glob("parte-*.parquet"))
         logger.info("Baixadas %d partes; consolidando", len(partes))
         df = pd.concat([pd.read_parquet(p) for p in partes], ignore_index=True)
+    linhas_origem = client.get_table(tabela).num_rows
+    if len(df) != linhas_origem:
+        raise RuntimeError(
+            f"ABT baixada com {len(df):,} linhas, mas {tabela} tem "
+            f"{linhas_origem:,} — exportação inconsistente (partes remanescentes?)"
+        )
     df.to_parquet(destino, index=False)
 
-    logger.info("ABT salva: %d linhas x %d colunas (%.1f MiB)",
+    logger.info("ABT salva: %d linhas x %d colunas (%.1f MiB) — confere com a origem",
                 len(df), df.shape[1], destino.stat().st_size / 1024**2)
     return destino
 
 
-def carregar_abt(caminho: Path = CAMINHO_ABT) -> pd.DataFrame:
-    """Carrega a ABT local; extrai do BigQuery se ainda não existir."""
+def carregar_abt(caminho: Path = CAMINHO_ABT, otimizar: bool = True) -> pd.DataFrame:
+    """Carrega a ABT local; extrai do BigQuery se ainda não existir.
+
+    ``otimizar`` reduz o consumo de memória em cerca de 60%: float64 -> float32 e
+    colunas de texto -> `category`. Não é micro-otimização — com 3,35 milhões de
+    linhas por ~150 colunas, a versão float64 mais as cópias que o `ColumnTransformer`
+    produz a cada etapa empurram o processo para a área de troca, e o treino passa a
+    ser limitado por disco em vez de CPU. float32 tem 7 dígitos significativos, muito
+    além da precisão dos indicadores educacionais de origem.
+    """
     if not caminho.exists():
         extrair_abt(caminho)
     df = pd.read_parquet(caminho)
+    if otimizar:
+        antes = df.memory_usage(deep=True).sum() / 1024**2
+        for col in df.select_dtypes("float64").columns:
+            df[col] = df[col].astype("float32")
+        for col in df.select_dtypes("object").columns:
+            if col not in ("id_aluno",) and df[col].nunique() < len(df) * 0.5:
+                df[col] = df[col].astype("category")
+        depois = df.memory_usage(deep=True).sum() / 1024**2
+        logger.info("Memória da ABT: %.0f MiB -> %.0f MiB (-%.0f%%)",
+                    antes, depois, (1 - depois / antes) * 100)
     logger.info("ABT carregada: %d linhas x %d colunas", len(df), df.shape[1])
     return df
 
