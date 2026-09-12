@@ -75,8 +75,9 @@ def main(argv: list | None = None) -> int:
 
     print(f"\nMelhor modelo ('{nomes[0]}') por estrato de cobertura territorial:")
     print(por_estrato.round(4).to_string())
-    logger.info("Figuras: %s | %s",
-                caminho_curvas.split("/")[-1], caminho_estratos.split("/")[-1])
+    logger.info("Figuras: %s%s", caminho_curvas.split("/")[-1],
+                f" | {caminho_estratos.split('/')[-1]}" if caminho_estratos
+                else " (painel por estrato omitido: estrato único)")
     return 0
 
 

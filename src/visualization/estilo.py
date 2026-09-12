@@ -124,13 +124,18 @@ def rotular_barras(ax, formato="{:.0f}", deslocamento=3, horizontal=False) -> No
 
 
 def titular(ax, titulo: str, subtitulo: str | None = None) -> None:
-    """Título em negrito com subtítulo explicativo em tinta secundária."""
-    if subtitulo:
-        ax.set_title(titulo, loc="left", pad=24)
-        ax.text(0, 1.02, subtitulo, transform=ax.transAxes, fontsize=9,
-                color=TINTA_SECUNDARIA, va="bottom", ha="left")
-    else:
+    """Título em negrito com subtítulo explicativo em tinta secundária.
+
+    O espaçamento acompanha o número de linhas do subtítulo: com `pad` fixo, um
+    subtítulo de duas linhas invade o título.
+    """
+    if not subtitulo:
         ax.set_title(titulo, loc="left")
+        return
+    n_linhas = subtitulo.count("\n") + 1
+    ax.set_title(titulo, loc="left", pad=12 + 13 * n_linhas)
+    ax.text(0, 1.015, subtitulo, transform=ax.transAxes, fontsize=9,
+            color=TINTA_SECUNDARIA, va="bottom", ha="left", linespacing=1.35)
 
 
 def salvar(fig, nome: str, pasta=None) -> str:

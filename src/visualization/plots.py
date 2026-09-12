@@ -80,9 +80,16 @@ def fig_curvas(y, probabilidades: dict[str, np.ndarray], nome: str) -> str:
 
 
 def fig_metricas_por_estrato(por_estrato: pd.DataFrame, nome: str) -> str:
-    """ROC AUC por estrato de cobertura territorial."""
-    aplicar_estilo()
+    """ROC AUC por estrato de cobertura territorial.
+
+    Devolve string vazia quando há um único estrato — caso do desenho espacial, em
+    que a partição por município garante, por construção, que todo o teste caia em
+    "município novo". Um gráfico de barra única não informa nada.
+    """
     dados = por_estrato.drop(index="(total)", errors="ignore").copy()
+    if len(dados) < 2:
+        return ""
+    aplicar_estilo()
     total = por_estrato.loc["(total)", "roc_auc"] if "(total)" in por_estrato.index else None
 
     fig, ax = plt.subplots(figsize=(8.5, 3.6))
@@ -127,26 +134,46 @@ def fig_importancia(imp: pd.DataFrame, coluna: str, titulo: str,
     return salvar(fig, nome)
 
 
-def fig_ablacao(ablacao: pd.DataFrame) -> str:
-    """Perda de AUC ao remover cada bloco temático inteiro."""
+def fig_ablacao(ablacao: pd.DataFrame, margem_total: float | None = None) -> str:
+    """Perda de AUC ao remover cada bloco temático inteiro.
+
+    ``margem_total`` é a vantagem do modelo completo sobre o acaso (AUC − 0,5). Serve
+    para calibrar a leitura: sem essa referência, o eixo auto-escalado faz diferenças
+    de 0,001 parecerem grandes. Com ela, fica claro que nenhum bloco isolado responde
+    por mais de ~1% do que o modelo sabe.
+    """
     aplicar_estilo()
+    completo = ablacao[ablacao["bloco"] == "(modelo completo)"]
+    if margem_total is None and not completo.empty:
+        margem_total = float(completo["roc_auc"].iloc[0]) - 0.5
+
     dados = ablacao[ablacao["bloco"] != "(modelo completo)"].copy()
     dados = dados.sort_values("queda_auc").tail(12)
+    rotulos = dados["bloco"].str.replace("sem ", "", regex=False)
     cores = [CATEGORICA[0] if q > 0 else CATEGORICA[7] for q in dados["queda_auc"]]
 
-    fig, ax = plt.subplots(figsize=(9.5, 0.46 * len(dados) + 1.8))
-    ax.barh(dados["bloco"].str.replace("sem ", ""), dados["queda_auc"],
-            color=cores, height=0.6)
+    fig, ax = plt.subplots(figsize=(10, 0.46 * len(dados) + 2.2))
+    ax.barh(rotulos, dados["queda_auc"], color=cores, height=0.58)
     ax.axvline(0, color=TINTA_SECUNDARIA, lw=1)
+
+    limite = max(abs(dados["queda_auc"]).max(), 1e-6)
     for y, q in enumerate(dados["queda_auc"]):
-        ax.annotate(f"{q:+.4f}".replace(".", ","), (q, y),
-                    xytext=(5 if q > 0 else -5, 0), textcoords="offset points",
-                    va="center", ha="left" if q > 0 else "right",
-                    fontsize=8, color=TINTA_SECUNDARIA)
-    ax.set_xlabel("Queda de ROC AUC ao remover o bloco")
-    titular(ax, "Quanto cada bloco de informação realmente contribui",
-            "ablação por bloco — imune à multicolinearidade, porque variáveis "
-            "redundantes saem juntas")
+        # Barras negativas recebem o rótulo à DIREITA do zero, onde a linha está
+        # vazia — à esquerda ele colidiria com o nome do bloco no eixo.
+        x, ha, desloc = (q, "left", 6) if q > 0 else (0.0, "left", 6)
+        ax.annotate(f"{q:+.4f}".replace(".", ","), (x, y),
+                    xytext=(desloc, 0), textcoords="offset points",
+                    va="center", ha=ha, fontsize=8.5, color=TINTA_SECUNDARIA)
+    ax.set_xlim(-limite * 1.25, limite * 1.45)
+    ax.set_xlabel("Queda de ROC AUC ao remover o bloco e retreinar")
+
+    subtitulo = ("ablação por bloco — imune à multicolinearidade, porque variáveis "
+                 "redundantes saem juntas")
+    if margem_total:
+        subtitulo += (f"\nreferência de escala: a vantagem total do modelo sobre o "
+                      f"acaso é {margem_total:.3f}".replace(".", ",")
+                      + " — nenhum bloco isolado vale 1% disso")
+    titular(ax, "Nenhum bloco de informação é insubstituível", subtitulo)
     limpar_eixos(ax)
     fig.tight_layout()
     return salvar(fig, "13_ablacao_por_bloco")
@@ -165,6 +192,15 @@ def fig_shap_resumo(valores, X_t, nome: str = "14_shap_resumo", n: int = 18) -> 
     titular(ax, "Como cada variável empurra a predição",
             "cada ponto é um aluno; a cor é o valor da variável (azul baixo, "
             "vermelho alto)")
+    # A biblioteca rotula a barra de cor em inglês ("Feature value", "High", "Low");
+    # traduzimos para manter o relatório inteiro em português.
+    for eixo in fig.axes:
+        if eixo is ax:
+            continue
+        if eixo.get_ylabel() == "Feature value":
+            eixo.set_ylabel("Valor da variável", color=TINTA_SECUNDARIA, fontsize=9)
+        eixo.set_yticks(eixo.get_ylim())
+        eixo.set_yticklabels(["baixo", "alto"], fontsize=8, color=TINTA_SECUNDARIA)
     fig.tight_layout()
     return salvar(fig, nome)
 
@@ -196,28 +232,38 @@ def fig_calibracao_municipal(ranking: pd.DataFrame, metricas: dict) -> str:
     return salvar(fig, "20_calibracao_municipal")
 
 
-def fig_residuos(ranking: pd.DataFrame, n: int = 12) -> str:
-    """Municípios que mais superam e mais ficam abaixo do próprio contexto."""
+def fig_residuos(ranking: pd.DataFrame, n: int = 12, coluna: str = "residuo_ajustado") -> str:
+    """Municípios que mais superam e mais ficam abaixo dos seus pares estaduais.
+
+    Usa por padrão o resíduo **ajustado pela UF**: o resíduo bruto confunde gestão
+    municipal com deriva do estado inteiro entre os anos, e o Rio Grande do Sul — que
+    caiu 18,9 p.p. — dominaria a lista por um motivo que nada tem a ver com as redes
+    municipais gaúchas.
+    """
     aplicar_estilo()
+    if coluna not in ranking.columns:
+        coluna = "residuo"
     validos = ranking[ranking["n_alunos"] >= 100].copy()
-    piores = validos.nsmallest(n, "residuo")
-    melhores = validos.nlargest(n, "residuo")
-    dados = pd.concat([piores, melhores]).sort_values("residuo")
-    rotulos = dados["municipio"].str.slice(0, 22) + " / " + dados["uf"]
-    cores = [STATUS["critico"] if r < 0 else STATUS["bom"] for r in dados["residuo"]]
+    piores = validos.nsmallest(n, coluna)
+    melhores = validos.nlargest(n, coluna)
+    dados = pd.concat([piores, melhores]).sort_values(coluna)
+    rotulos = (dados["municipio"].astype(str).str.slice(0, 22)
+               + " / " + dados["uf"].astype(str))
+    cores = [STATUS["critico"] if r < 0 else STATUS["bom"] for r in dados[coluna]]
 
     fig, ax = plt.subplots(figsize=(9.5, 0.38 * len(dados) + 2))
-    ax.barh(rotulos, dados["residuo"] * 100, color=cores, height=0.66)
+    ax.barh(rotulos, dados[coluna] * 100, color=cores, height=0.6)
     ax.axvline(0, color=TINTA_SECUNDARIA, lw=1)
-    for y, r in enumerate(dados["residuo"] * 100):
+    for y, r in enumerate(dados[coluna] * 100):
         ax.annotate(f"{r:+.1f} p.p.".replace(".", ","), (r, y),
                     xytext=(5 if r > 0 else -5, 0), textcoords="offset points",
                     va="center", ha="left" if r > 0 else "right",
                     fontsize=8, color=TINTA_SECUNDARIA)
-    ax.set_xlabel("Taxa observada menos taxa prevista (pontos percentuais)")
-    titular(ax, "Quem foge do próprio contexto",
-            "à esquerda, redes que vão muito abaixo do previsto pelo seu contexto "
-            "(problema de gestão, não de pobreza); à direita, as que superam")
+    ax.set_xlabel("Resíduo ajustado pela UF (pontos percentuais)")
+    titular(ax, "Quem foge dos próprios pares estaduais",
+            "observado menos previsto, descontada a mediana do resíduo da UF\n"
+            "à esquerda, redes muito abaixo do que o contexto e o estado explicam; "
+            "à direita, as que superam")
     limpar_eixos(ax)
     fig.tight_layout()
     return salvar(fig, "21_residuos_municipais")

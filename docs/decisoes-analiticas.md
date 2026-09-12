@@ -201,11 +201,66 @@ anonimizou a escola nos microdados de alfabetização.
    que é ligável com cobertura de 100 %. Perde-se a variação entre escolas de um mesmo
    município; preserva-se a variação entre municípios — que, como mostra §3, é justamente
    a parcela estruturalmente previsível do fenômeno.
-3. O histórico da própria escola (`esc_lag_*`) continua disponível, porque é calculado
-   *dentro* da base, onde a chave substituta é consistente entre 2023 e 2024.
+3. **Nem mesmo o histórico da própria escola é recuperável.** A primeira versão deste
+   documento afirmava o contrário — que `esc_lag_*` seria viável porque a chave
+   substituta seria consistente entre os anos. **Estava errado**, e a verificação da
+   chave mostrou por quê: dos 36.051 identificadores presentes em 2023 e 2024, apenas
+   **864 (2,4%)** apontam para o mesmo município (§3). A numeração é reatribuída
+   anualmente em blocos por UF.
 
 Esta é uma limitação da fonte, não uma escolha de projeto, e está registrada como tal na
 seção de limitações do README.
 
-*(Seções seguintes — features externas, escolha de algoritmo e interpretação — são
-acrescentadas conforme as etapas são concluídas.)*
+---
+
+## 7. O peso amostral é artefato de desenho, não preditor
+
+**Decisão.** `alu_peso_amostral` não entra como feature. Fica disponível na ABT apenas
+para estatísticas descritivas ponderadas.
+
+**Evidência.** Não é vazamento — a correlação com o alvo é de −0,045 em 2023 e −0,066
+em 2024. O motivo é outro: **a metodologia de ponderação mudou entre os anos**.
+
+| ano | valores distintos | mínimo | máximo |
+|---|---:|---:|---:|
+| 2023 | 13.185 | 0,095 | 142,5 |
+| 2024 | 540 | 1,000 | 29,8 |
+
+No desenho out-of-time isso é deriva de covariável pura: o modelo aprenderia em 2023
+uma relação que simplesmente não existe em 2024.
+
+**Efeito colateral inesperado.** Remover a coluna reduziu o tempo de ajuste da regressão
+logística de **8 minutos para 40 segundos**. A cauda pesada (de 0,095 a 142,5)
+arruinava o condicionamento numérico do lbfgs. Um problema de modelagem e um de
+desempenho, com a mesma causa.
+
+---
+
+## 8. `alu_caderno` ficou no modelo de propósito, como controle negativo
+
+**Decisão.** O número do caderno de prova — atribuído por rotação, sem relação com a
+criança — foi mantido entre as features.
+
+**Por quê.** Serve de **controle negativo**: uma variável que sabidamente não deveria
+importar. Se o pipeline estiver correto, ela tem de aparecer como irrelevante nas
+medidas honestas de importância.
+
+**Resultado, e a razão de valer a pena:**
+
+| medida | valor | posição entre 125 features |
+|---|---:|---:|
+| importância nativa (ganho) | 6.274 | **1ª** |
+| importância por permutação (teste) | **−0,00054** | **124ª** |
+
+A variável de maior ganho é a penúltima em contribuição para a generalização — e o
+sinal negativo indica que embaralhá-la até melhora levemente o modelo.
+
+**Confirmação independente:** em 2023, os 21 cadernos diferem apenas **2,7 pontos
+percentuais** entre o extremo mais alto e o mais baixo (desvio de 0,67 p.p.). Não há
+sinal para aprender.
+
+A explicação é o viés conhecido da métrica de ganho a favor de variáveis de **alta
+cardinalidade**: 21 níveis oferecem muitos pontos de corte, e cada corte captura um
+pouco de ruído do conjunto de treino. É a razão de a importância por permutação, medida
+no conjunto de TESTE, ser a métrica reportada como conclusão — e da importância nativa
+ser apresentada apenas como triagem.

@@ -146,8 +146,9 @@ def executar(
         y_teste, {n: probabilidades[n] for n in quadro.index if n != "referencia"},
         desenho)
     caminho_estratos = plots.fig_metricas_por_estrato(por_estrato, desenho)
-    logger.info("Figuras: %s | %s",
-                caminho_curvas.split("/")[-1], caminho_estratos.split("/")[-1])
+    logger.info("Figuras: %s%s", caminho_curvas.split("/")[-1],
+                f" | {caminho_estratos.split('/')[-1]}" if caminho_estratos
+                else " (painel por estrato omitido: estrato único)")
 
     if salvar:
         destino = REPORTS_DIR / f"metricas_{desenho}.csv"

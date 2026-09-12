@@ -122,7 +122,7 @@ make setup                                        # venv + dependências
 export GCP_ACCESS_TOKEN=$(gcloud auth print-access-token)
 make features-dry                                 # valida os SQLs e estima o custo
 make tudo                                         # feature store → ABT → EDA → modelos → relatórios
-make testes                                       # 12 testes, incluindo os de antivazamento
+make testes                                       # 13 testes, incluindo os de antivazamento
 ```
 
 A semente aleatória (`random_state = 42`) está centralizada em `config/config.yaml` e

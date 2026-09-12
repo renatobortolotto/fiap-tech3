@@ -143,7 +143,6 @@ def ablacao_por_bloco(
     """
     prefixos = {
         "aluno": ("alu_",),
-        "escola (histórico)": ("esc_lag_",),
         "escola (infraestrutura)": ("inf_",),
         "escola (socioeconômico)": ("inse_",),
         "educacional": ("edu_",),
