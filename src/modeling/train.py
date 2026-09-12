@@ -52,13 +52,20 @@ DESENHOS = {
 
 
 def amostrar(df: pd.DataFrame, n: int | None, random_state: int = RANDOM_STATE):
-    """Subamostra estratificada pelo alvo (para iteração rápida durante o ajuste)."""
+    """Subamostra estratificada pelo alvo (para iteração rápida durante o ajuste).
+
+    Sorteia os índices por classe e recorta uma vez, em vez de usar `groupby.apply`:
+    evita a cópia por grupo e o aviso de depreciação do pandas sobre a inclusão das
+    colunas de agrupamento.
+    """
     if n is None or n >= len(df):
         return df
-    return (df.groupby(ALVO, group_keys=False)
-              .apply(lambda g: g.sample(int(round(n * len(g) / len(df))),
-                                        random_state=random_state))
-              .reset_index(drop=True))
+    rng = np.random.default_rng(random_state)
+    escolhidos = []
+    for _, indices in df.groupby(ALVO, observed=True).indices.items():
+        tamanho = int(round(n * len(indices) / len(df)))
+        escolhidos.append(rng.choice(indices, min(tamanho, len(indices)), replace=False))
+    return df.iloc[np.sort(np.concatenate(escolhidos))].reset_index(drop=True)
 
 
 def treinar_e_avaliar(

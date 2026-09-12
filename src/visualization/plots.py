@@ -12,6 +12,7 @@ from sklearn.metrics import precision_recall_curve, roc_curve
 
 from .estilo import (
     CATEGORICA,
+    SUPERFICIE,
     DIVERGENTE,
     STATUS,
     TINTA_SECUNDARIA,
@@ -92,20 +93,25 @@ def fig_metricas_por_estrato(por_estrato: pd.DataFrame, nome: str) -> str:
     aplicar_estilo()
     total = por_estrato.loc["(total)", "roc_auc"] if "(total)" in por_estrato.index else None
 
-    fig, ax = plt.subplots(figsize=(8.5, 3.6))
-    ax.barh(dados.index, dados["roc_auc"], color=CATEGORICA[0], height=0.55)
+    altura = 0.34 if len(dados) <= 2 else 0.5
+    fig, ax = plt.subplots(figsize=(8.8, 0.72 * len(dados) + 1.9))
+    ax.barh(dados.index, dados["roc_auc"], color=CATEGORICA[0], height=altura)
     for y, (auc, n) in enumerate(zip(dados["roc_auc"], dados["n"])):
         ax.annotate(f"{auc:.3f}".replace(".", ",")
                     + f"   ({int(n):,} alunos)".replace(",", "."),
                     (auc, y), xytext=(6, 0), textcoords="offset points",
                     va="center", fontsize=9, color=TINTA_SECUNDARIA)
+    ax.set_xlim(0.5, max(0.75, dados["roc_auc"].max() * 1.22))
     if total is not None:
+        from matplotlib.transforms import blended_transform_factory
         ax.axvline(total, color=CATEGORICA[1], ls="--", lw=1.5)
-        ax.annotate(f"total {total:.3f}".replace(".", ","),
-                    (total, len(dados) - 0.4), xytext=(4, 0),
-                    textcoords="offset points", fontsize=9, color=CATEGORICA[1])
-    ax.set_xlim(0.5, max(0.75, dados["roc_auc"].max() * 1.25))
-    ax.set_xlabel("ROC AUC")
+        # Rótulo DENTRO da área do gráfico (x nos dados, y na fração do eixo), para
+        # não competir com o subtítulo nem depender do número de faixas.
+        ax.text(total, 0.5, f" total {total:.3f}".replace(".", ","),
+                transform=blended_transform_factory(ax.transData, ax.transAxes),
+                fontsize=9, color=CATEGORICA[1], ha="left", va="center",
+                bbox=dict(facecolor=SUPERFICIE, edgecolor="none", pad=1.5))
+    ax.set_xlabel("ROC AUC  ·  0,500 = acaso")
     titular(ax, "Generalização não é uma coisa só",
             "desempenho separado por quanto o treino já conhecia o território")
     limpar_eixos(ax)
@@ -208,7 +214,8 @@ def fig_shap_resumo(valores, X_t, nome: str = "14_shap_resumo", n: int = 18) -> 
 # =============================================================================
 # Aplicação estratégica
 # =============================================================================
-def fig_calibracao_municipal(ranking: pd.DataFrame, metricas: dict) -> str:
+def fig_calibracao_municipal(ranking: pd.DataFrame, metricas: dict,
+                             nome: str = "20_calibracao_municipal") -> str:
     """Taxa prevista x observada por município — a precisão que interessa ao gestor."""
     aplicar_estilo()
     fig, ax = plt.subplots(figsize=(6.8, 6.4))
@@ -220,19 +227,23 @@ def fig_calibracao_municipal(ranking: pd.DataFrame, metricas: dict) -> str:
     ax.set_ylabel("Taxa municipal observada (%)")
     ax.set_xlim(10, 100)
     ax.set_ylim(0, 100)
-    titular(ax, "No grão do município, a previsão é precisa",
-            f"r = {metricas['correlacao']:.3f}".replace(".", ",")
-            + f" · erro absoluto médio {metricas['erro_medio_absoluto_pp']:.1f} p.p."
-              .replace(".", ",")
-            + f" · {metricas['n_municipios']:,} municípios".replace(",", "."))
-    ax.annotate("tamanho do ponto = nº de alunos avaliados", (0.03, 0.95),
+    r = f"{metricas['correlacao']:.3f}".replace(".", ",")
+    mae = f"{metricas['erro_medio_absoluto_pp']:.1f}".replace(".", ",")
+    vies = f"{metricas['vies_pp']:+.1f}".replace(".", ",")
+    n = f"{metricas['n_municipios']:,}".replace(",", ".")
+    titular(ax, "A previsão agregada por município ordena bem, com margem larga",
+            f"r = {r} · erro absoluto médio {mae} p.p. · viés {vies} p.p. · "
+            f"{n} municípios\npontos acima da diagonal = o modelo subestimou "
+            "(treinado em 2023, que foi pior que 2024)")
+    ax.annotate("tamanho do ponto = nº de alunos avaliados", (0.03, 0.955),
                 xycoords="axes fraction", fontsize=8, color=TINTA_SECUNDARIA)
     limpar_eixos(ax)
     fig.tight_layout()
-    return salvar(fig, "20_calibracao_municipal")
+    return salvar(fig, nome)
 
 
-def fig_residuos(ranking: pd.DataFrame, n: int = 12, coluna: str = "residuo_ajustado") -> str:
+def fig_residuos(ranking: pd.DataFrame, n: int = 12, coluna: str = "residuo_ajustado",
+                 nome: str = "21_residuos_municipais") -> str:
     """Municípios que mais superam e mais ficam abaixo dos seus pares estaduais.
 
     Usa por padrão o resíduo **ajustado pela UF**: o resíduo bruto confunde gestão
@@ -266,10 +277,11 @@ def fig_residuos(ranking: pd.DataFrame, n: int = 12, coluna: str = "residuo_ajus
             "à direita, as que superam")
     limpar_eixos(ax)
     fig.tight_layout()
-    return salvar(fig, "21_residuos_municipais")
+    return salvar(fig, nome)
 
 
-def fig_grupos(perfil: pd.DataFrame, municipios: pd.DataFrame) -> str:
+def fig_grupos(perfil: pd.DataFrame, municipios: pd.DataFrame,
+               nome: str = "22_grupos_municipais") -> str:
     """Perfis de município encontrados por agrupamento, e o desempenho de cada um."""
     aplicar_estilo()
     fig, eixos = plt.subplots(1, 2, figsize=(12.5, 4.4))
@@ -295,4 +307,4 @@ def fig_grupos(perfil: pd.DataFrame, municipios: pd.DataFrame) -> str:
     for ax in eixos:
         limpar_eixos(ax)
     fig.tight_layout()
-    return salvar(fig, "22_grupos_municipais")
+    return salvar(fig, nome)

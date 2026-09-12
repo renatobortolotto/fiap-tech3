@@ -61,9 +61,11 @@ def main() -> int:
         "",
         "## 1. A base",
         "",
-        f"- **{len(df):,}** alunos avaliados".replace(",", ".") +
-        f", em **{df['id_municipio'].nunique():,}".replace(",", ".") + "** municípios",
-        f"- **{len(features)}** features em **{len(blocos_features)}** blocos temáticos",
+        f"- **{len(df):,}** alunos avaliados".replace(",", ".")
+        + f", em **{df['id_municipio'].nunique():,}** municípios".replace(",", "."),
+        f"- **{len(features)}** features candidatas em **{len(blocos_features)}** "
+        "blocos temáticos (antes do descarte de colunas degeneradas, que o treino "
+        "aplica: o Modelo A usa 125 e o Modelo B, 137)",
         "",
         "| ano | alunos | % alfabetizados |",
         "|---|---:|---:|",

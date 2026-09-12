@@ -114,94 +114,94 @@ ses_idade_mediana,124,ganho,município (socioeconômico)
 inf_pct_agua_potavel,107,ganho,escola (infraestrutura)
 alu_rede_Estadual,83,ganho,aluno
 edu_horas_aula_ai,79,ganho,educacional
-missingindicator_edu_alunos_por_turma_ai,69,ganho,outros
+missingindicator_edu_alunos_por_turma_ai,69,ganho,educacional (ausência)
 edu_ideb_ai_publica_imputado,67,ganho,educacional
 edu_ideb_ai_uf,65,ganho,educacional
 inf_pct_energia_publica,42,ganho,escola (infraestrutura)
 edu_afd_grupo5_ai,42,ganho,educacional
 edu_esforco_docente_n6,40,ganho,educacional
-missingindicator_edu_horas_aula_ai,20,ganho,outros
-missingindicator_edu_gap_tdi_rural_urbana,17,ganho,outros
-missingindicator_edu_alunos_por_turma_rural,14,ganho,outros
+missingindicator_edu_horas_aula_ai,20,ganho,educacional (ausência)
+missingindicator_edu_gap_tdi_rural_urbana,17,ganho,educacional (ausência)
+missingindicator_edu_alunos_por_turma_rural,14,ganho,educacional (ausência)
 alu_rede_Municipal,13,ganho,aluno
-missingindicator_edu_ideb_ai_rede_do_aluno,12,ganho,outros
-missingindicator_edu_saeb5_gap_urbano_rural_lp,11,ganho,outros
-missingindicator_edu_tdi_2ano,10,ganho,outros
-missingindicator_inse_desvio_escolas,9,ganho,outros
+missingindicator_edu_ideb_ai_rede_do_aluno,12,ganho,educacional (ausência)
+missingindicator_edu_saeb5_gap_urbano_rural_lp,11,ganho,educacional (ausência)
+missingindicator_edu_tdi_2ano,10,ganho,educacional (ausência)
+missingindicator_inse_desvio_escolas,9,ganho,escola (socioeconômico) (ausência)
 ter_amazonia_legal,6,ganho,território
-missingindicator_edu_tdi_anos_iniciais,6,ganho,outros
+missingindicator_edu_tdi_anos_iniciais,6,ganho,educacional (ausência)
 ter_regiao_Centro-Oeste,6,ganho,território
 ter_regiao_Sudeste,6,ganho,território
-missingindicator_edu_ideb_variacao,6,ganho,outros
-missingindicator_edu_afd_grupo5_ai,4,ganho,outros
+missingindicator_edu_ideb_variacao,6,ganho,educacional (ausência)
+missingindicator_edu_afd_grupo5_ai,4,ganho,educacional (ausência)
 edu_ideb_imputado_uf,4,ganho,educacional
-missingindicator_edu_ideb_taxa_aprovacao,4,ganho,outros
+missingindicator_edu_ideb_taxa_aprovacao,4,ganho,educacional (ausência)
 ter_regiao_Norte,4,ganho,território
-missingindicator_fin_log_receita_fundeb,3,ganho,outros
-missingindicator_edu_ideb_ai_publica,3,ganho,outros
-missingindicator_edu_saeb5_media_lp,2,ganho,outros
-missingindicator_fin_log_desp_educacao,2,ganho,outros
-missingindicator_edu_ideb_indicador_rendimento,1,ganho,outros
-missingindicator_edu_esforco_docente_n6,1,ganho,outros
-missingindicator_inse_medio,1,ganho,outros
-missingindicator_edu_saeb_nota_lp,1,ganho,outros
-missingindicator_fin_pct_fundeb_sobre_desp_total,1,ganho,outros
+missingindicator_fin_log_receita_fundeb,3,ganho,município (financiamento) (ausência)
+missingindicator_edu_ideb_ai_publica,3,ganho,educacional (ausência)
+missingindicator_edu_saeb5_media_lp,2,ganho,educacional (ausência)
+missingindicator_fin_log_desp_educacao,2,ganho,município (financiamento) (ausência)
+missingindicator_edu_ideb_indicador_rendimento,1,ganho,educacional (ausência)
+missingindicator_edu_esforco_docente_n6,1,ganho,educacional (ausência)
+missingindicator_inse_medio,1,ganho,escola (socioeconômico) (ausência)
+missingindicator_edu_saeb_nota_lp,1,ganho,educacional (ausência)
+missingindicator_fin_pct_fundeb_sobre_desp_total,1,ganho,município (financiamento) (ausência)
 ter_regiao_Nordeste,1,ganho,território
 ter_regiao_Sul,1,ganho,território
-missingindicator_fin_pct_educacao_sobre_desp_total,1,ganho,outros
-missingindicator_edu_saeb_nota_mat,1,ganho,outros
+missingindicator_fin_pct_educacao_sobre_desp_total,1,ganho,município (financiamento) (ausência)
+missingindicator_edu_saeb_nota_mat,1,ganho,educacional (ausência)
 inf_pct_alimentacao,0,ganho,escola (infraestrutura)
 ter_capital_uf,0,ganho,território
-missingindicator_inf_alunos_por_turma_ai,0,ganho,outros
-missingindicator_inf_alunos_por_docente_ai,0,ganho,outros
-missingindicator_inse_medio_uf,0,ganho,outros
-missingindicator_inse_desvio_vs_uf,0,ganho,outros
-missingindicator_inse_min_escola,0,ganho,outros
-missingindicator_edu_regularidade_docente_alta,0,ganho,outros
-missingindicator_edu_complexidade_gestao_n1,0,ganho,outros
-missingindicator_edu_esforco_docente_n1,0,ganho,outros
-missingindicator_edu_docentes_superior_ai,0,ganho,outros
-missingindicator_edu_afd_grupo1_ai,0,ganho,outros
-missingindicator_inse_pct_escolas_rurais,0,ganho,outros
-missingindicator_inse_pct_niveis_altos,0,ganho,outros
-missingindicator_inse_n_escolas,0,ganho,outros
-missingindicator_inse_pct_niveis_baixos,0,ganho,outros
-missingindicator_inse_tamanho_medio_escola,0,ganho,outros
-missingindicator_edu_saeb5_pct_lp_altos,0,ganho,outros
-missingindicator_edu_regularidade_docente_baixa,0,ganho,outros
-missingindicator_edu_reprovacao_ai_lag1,0,ganho,outros
-missingindicator_edu_abandono_ai_lag1,0,ganho,outros
-missingindicator_edu_saeb5_pct_lp_baixos,0,ganho,outros
-missingindicator_edu_aprovacao_ai_lag1,0,ganho,outros
-missingindicator_ses_fecundidade_total,0,ganho,outros
-missingindicator_ses_prop_mae_sem_fundamental,0,ganho,outros
-missingindicator_ses_prop_resp_sem_fundamental,0,ganho,outros
-missingindicator_ses_prop_domicilio_denso,0,ganho,outros
-missingindicator_ses_prop_vulneravel,0,ganho,outros
-missingindicator_ses_gini,0,ganho,outros
-missingindicator_ses_log_renda_per_capita,0,ganho,outros
-missingindicator_ses_idhm_educacao,0,ganho,outros
-missingindicator_ses_ivs_infra_urbana,0,ganho,outros
-missingindicator_ses_ivs_renda_trabalho,0,ganho,outros
-missingindicator_ses_ivs_capital_humano,0,ganho,outros
-missingindicator_ses_ivs,0,ganho,outros
-missingindicator_edu_ideb_imputado_uf,0,ganho,outros
-missingindicator_edu_ideb_ai_publica_imputado,0,ganho,outros
-missingindicator_edu_ideb_ai_uf,0,ganho,outros
-missingindicator_ses_mortalidade_infantil,0,ganho,outros
-missingindicator_fin_pct_desp_ens_fund_sobre_educ,0,ganho,outros
-missingindicator_fin_pct_fundeb_educ_infantil,0,ganho,outros
-missingindicator_fin_pct_fundeb_ens_fund,0,ganho,outros
-missingindicator_fin_pct_fundeb_nao_aplicado,0,ganho,outros
-missingindicator_fin_desp_professor_por_aluno,0,ganho,outros
-missingindicator_fin_pct_mde_sobre_impostos,0,ganho,outros
-missingindicator_fin_invest_aluno_educ_basica,0,ganho,outros
-missingindicator_fin_invest_aluno_ens_fund,0,ganho,outros
-missingindicator_ses_taxa_atraso_2anos_fund,0,ganho,outros
-missingindicator_ses_taxa_freq_escola_5_6,0,ganho,outros
-missingindicator_ses_prop_pobreza_criancas,0,ganho,outros
-missingindicator_ses_taxa_desocupacao,0,ganho,outros
-missingindicator_ses_prop_crianca_fora_escola,0,ganho,outros
-missingindicator_ses_expectativa_anos_estudo,0,ganho,outros
-missingindicator_fin_pct_complementacao_uniao,0,ganho,outros
-missingindicator_fin_pct_ens_fund_sobre_educacao,0,ganho,outros
+missingindicator_inf_alunos_por_turma_ai,0,ganho,escola (infraestrutura) (ausência)
+missingindicator_inf_alunos_por_docente_ai,0,ganho,escola (infraestrutura) (ausência)
+missingindicator_inse_medio_uf,0,ganho,escola (socioeconômico) (ausência)
+missingindicator_inse_desvio_vs_uf,0,ganho,escola (socioeconômico) (ausência)
+missingindicator_inse_min_escola,0,ganho,escola (socioeconômico) (ausência)
+missingindicator_edu_regularidade_docente_alta,0,ganho,educacional (ausência)
+missingindicator_edu_complexidade_gestao_n1,0,ganho,educacional (ausência)
+missingindicator_edu_esforco_docente_n1,0,ganho,educacional (ausência)
+missingindicator_edu_docentes_superior_ai,0,ganho,educacional (ausência)
+missingindicator_edu_afd_grupo1_ai,0,ganho,educacional (ausência)
+missingindicator_inse_pct_escolas_rurais,0,ganho,escola (socioeconômico) (ausência)
+missingindicator_inse_pct_niveis_altos,0,ganho,escola (socioeconômico) (ausência)
+missingindicator_inse_n_escolas,0,ganho,escola (socioeconômico) (ausência)
+missingindicator_inse_pct_niveis_baixos,0,ganho,escola (socioeconômico) (ausência)
+missingindicator_inse_tamanho_medio_escola,0,ganho,escola (socioeconômico) (ausência)
+missingindicator_edu_saeb5_pct_lp_altos,0,ganho,educacional (ausência)
+missingindicator_edu_regularidade_docente_baixa,0,ganho,educacional (ausência)
+missingindicator_edu_reprovacao_ai_lag1,0,ganho,educacional (ausência)
+missingindicator_edu_abandono_ai_lag1,0,ganho,educacional (ausência)
+missingindicator_edu_saeb5_pct_lp_baixos,0,ganho,educacional (ausência)
+missingindicator_edu_aprovacao_ai_lag1,0,ganho,educacional (ausência)
+missingindicator_ses_fecundidade_total,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_prop_mae_sem_fundamental,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_prop_resp_sem_fundamental,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_prop_domicilio_denso,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_prop_vulneravel,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_gini,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_log_renda_per_capita,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_idhm_educacao,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_ivs_infra_urbana,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_ivs_renda_trabalho,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_ivs_capital_humano,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_ivs,0,ganho,município (socioeconômico) (ausência)
+missingindicator_edu_ideb_imputado_uf,0,ganho,educacional (ausência)
+missingindicator_edu_ideb_ai_publica_imputado,0,ganho,educacional (ausência)
+missingindicator_edu_ideb_ai_uf,0,ganho,educacional (ausência)
+missingindicator_ses_mortalidade_infantil,0,ganho,município (socioeconômico) (ausência)
+missingindicator_fin_pct_desp_ens_fund_sobre_educ,0,ganho,município (financiamento) (ausência)
+missingindicator_fin_pct_fundeb_educ_infantil,0,ganho,município (financiamento) (ausência)
+missingindicator_fin_pct_fundeb_ens_fund,0,ganho,município (financiamento) (ausência)
+missingindicator_fin_pct_fundeb_nao_aplicado,0,ganho,município (financiamento) (ausência)
+missingindicator_fin_desp_professor_por_aluno,0,ganho,município (financiamento) (ausência)
+missingindicator_fin_pct_mde_sobre_impostos,0,ganho,município (financiamento) (ausência)
+missingindicator_fin_invest_aluno_educ_basica,0,ganho,município (financiamento) (ausência)
+missingindicator_fin_invest_aluno_ens_fund,0,ganho,município (financiamento) (ausência)
+missingindicator_ses_taxa_atraso_2anos_fund,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_taxa_freq_escola_5_6,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_prop_pobreza_criancas,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_taxa_desocupacao,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_prop_crianca_fora_escola,0,ganho,município (socioeconômico) (ausência)
+missingindicator_ses_expectativa_anos_estudo,0,ganho,município (socioeconômico) (ausência)
+missingindicator_fin_pct_complementacao_uniao,0,ganho,município (financiamento) (ausência)
+missingindicator_fin_pct_ens_fund_sobre_educacao,0,ganho,município (financiamento) (ausência)

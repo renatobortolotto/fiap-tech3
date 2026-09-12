@@ -37,41 +37,43 @@ Risco = 1 − taxa prevista. Municípios com ao menos 100 alunos avaliados.
 | Cachoeira | BA | 242 | 59,1% | 33,1% |
 | Paratinga | BA | 233 | 58,9% | 24,5% |
 
-## Quem foge do próprio contexto — a leitura acionável
+## Quem foge dos próprios pares — a leitura acionável
 
-O risco absoluto em geral apenas reflete a pobreza do território. O **resíduo** (observado − previsto) isola o que o contexto NÃO explica: resíduo muito negativo aponta problema de gestão; muito positivo aponta prática que merece ser estudada e replicada.
+O risco absoluto em geral apenas reflete a pobreza do território. O **resíduo** (observado − previsto) isola o que o contexto NÃO explica.
+
+Mas o resíduo bruto tem um defeito, e ele apareceu na primeira versão desta análise: **confunde gestão municipal com deriva do estado inteiro**. Como o Rio Grande do Sul caiu 18,9 p.p. entre 2023 e 2024, municípios gaúchos ocupavam 4 das 10 piores posições — por um motivo que nada tem a ver com as redes municipais. A coluna reportada aqui é o **resíduo ajustado**: o resíduo menos a mediana do resíduo da própria UF. O que sobra é o desvio do município em relação aos seus pares estaduais.
 
 ![resíduos](../images/21_residuos_municipais.png)
 
-### Abaixo do esperado
+### Abaixo dos pares estaduais
 
-| município | UF | alunos | observado | previsto | resíduo |
-|---|---|---:|---:|---:|---:|
-| Anapurus | MA | 109 | 33,9% | 66,2% | **-32,3 p.p.** |
-| Taquari | RS | 226 | 26,5% | 55,7% | **-29,2 p.p.** |
-| Matias Cardoso | MG | 112 | 31,2% | 58,7% | **-27,5 p.p.** |
-| Oiapoque | AP | 384 | 21,4% | 48,4% | **-27,0 p.p.** |
-| Miguelópolis | SP | 155 | 31,0% | 57,6% | **-26,7 p.p.** |
-| Escada | PE | 406 | 30,8% | 56,5% | **-25,7 p.p.** |
-| Jacareacanga | PA | 187 | 26,2% | 51,7% | **-25,5 p.p.** |
-| Buriti | MA | 251 | 29,1% | 53,6% | **-24,5 p.p.** |
-| Matões | MA | 269 | 34,2% | 58,6% | **-24,4 p.p.** |
-| Ouricuri | PE | 510 | 31,4% | 55,6% | **-24,2 p.p.** |
+| município | UF | alunos | observado | previsto | resíduo bruto | ajustado |
+|---|---|---:|---:|---:|---:|---:|
+| Anapurus | MA | 109 | 33,9% | 66,2% | -32,3 p.p. | **-35,9 p.p.** |
+| Matias Cardoso | MG | 112 | 31,2% | 58,7% | -27,5 p.p. | **-34,2 p.p.** |
+| Escada | PE | 406 | 30,8% | 56,5% | -25,7 p.p. | **-31,4 p.p.** |
+| Ouricuri | PE | 510 | 31,4% | 55,6% | -24,2 p.p. | **-29,8 p.p.** |
+| Buriti | MA | 251 | 29,1% | 53,6% | -24,5 p.p. | **-28,1 p.p.** |
+| Matões | MA | 269 | 34,2% | 58,6% | -24,4 p.p. | **-28,0 p.p.** |
+| Icaraíma | PR | 105 | 52,4% | 71,1% | -18,7 p.p. | **-26,5 p.p.** |
+| Ilha Grande | PI | 148 | 33,8% | 56,3% | -22,5 p.p. | **-26,4 p.p.** |
+| Miguelópolis | SP | 155 | 31,0% | 57,6% | -26,7 p.p. | **-24,3 p.p.** |
+| Monção | MA | 245 | 35,9% | 56,3% | -20,3 p.p. | **-23,9 p.p.** |
 
-### Acima do esperado
+### Acima dos pares estaduais
 
-| município | UF | alunos | observado | previsto | resíduo |
-|---|---|---:|---:|---:|---:|
-| Atalaia do Norte | AM | 164 | 84,1% | 46,1% | **+38,1 p.p.** |
-| Lagoa Grande do Maranhão | MA | 106 | 97,2% | 62,6% | **+34,6 p.p.** |
-| Taperoá | PB | 123 | 91,1% | 63,2% | **+27,9 p.p.** |
-| Maracaí | SP | 110 | 90,9% | 63,1% | **+27,8 p.p.** |
-| Uruana | GO | 132 | 97,7% | 71,7% | **+26,1 p.p.** |
-| Buenos Aires | PE | 124 | 85,5% | 60,2% | **+25,3 p.p.** |
-| Magalhães de Almeida | MA | 144 | 81,9% | 57,2% | **+24,7 p.p.** |
-| Panelas | PE | 237 | 94,5% | 70,0% | **+24,5 p.p.** |
-| Água Branca | PI | 187 | 92,0% | 67,9% | **+24,1 p.p.** |
-| Santana do Cariri | CE | 172 | 96,5% | 72,7% | **+23,8 p.p.** |
+| município | UF | alunos | observado | previsto | resíduo bruto | ajustado |
+|---|---|---:|---:|---:|---:|---:|
+| Atalaia do Norte | AM | 164 | 84,1% | 46,1% | +38,1 p.p. | **+45,0 p.p.** |
+| Taperoá | PB | 123 | 91,1% | 63,2% | +27,9 p.p. | **+31,4 p.p.** |
+| Lagoa Grande do Maranhão | MA | 106 | 97,2% | 62,6% | +34,6 p.p. | **+31,0 p.p.** |
+| Maracaí | SP | 110 | 90,9% | 63,1% | +27,8 p.p. | **+30,1 p.p.** |
+| São Caetano de Odivelas | PA | 140 | 69,3% | 45,9% | +23,4 p.p. | **+27,3 p.p.** |
+| Urucará | AM | 180 | 75,0% | 56,2% | +18,8 p.p. | **+25,7 p.p.** |
+| Queimadas | PB | 561 | 92,9% | 71,1% | +21,8 p.p. | **+25,3 p.p.** |
+| Paranã | TO | 120 | 68,3% | 50,7% | +17,7 p.p. | **+24,5 p.p.** |
+| Três Lagoas | MS | 1.634 | 83,0% | 63,4% | +19,6 p.p. | **+24,1 p.p.** |
+| Craíbas | AL | 206 | 68,0% | 53,6% | +14,3 p.p. | **+23,5 p.p.** |
 
 ## Quais regiões possuem padrões semelhantes
 
@@ -98,22 +100,24 @@ A taxa municipal prevista é a média de indicadores de Bernoulli; sua distribui
 | risco alto | 69 |
 | risco crítico | 263 |
 
-| município | UF | meta | taxa prevista | prob. de não atingir |
-|---|---|---:|---:|---:|
-| Lajeado | RS | 75,5% | 56,5% | **100,0%** |
-| Apucarana | PR | 80,0% | 67,8% | **100,0%** |
-| Cambé | PR | 79,2% | 64,9% | **100,0%** |
-| Caxias do Sul | RS | 70,9% | 53,8% | **100,0%** |
-| Viamão | RS | 62,4% | 53,2% | **100,0%** |
-| Venâncio Aires | RS | 78,4% | 59,7% | **100,0%** |
-| Londrina | PR | 74,8% | 63,9% | **100,0%** |
-| Rio de Janeiro | RJ | 60,1% | 55,5% | **100,0%** |
-| Sapiranga | RS | 73,9% | 57,6% | **100,0%** |
-| Vila Velha | ES | 70,0% | 62,1% | **100,0%** |
-| Fazenda Rio Grande | PR | 70,7% | 61,6% | **100,0%** |
-| Francisco Beltrão | PR | 79,7% | 67,7% | **100,0%** |
-| Panambi | RS | 76,0% | 59,5% | **100,0%** |
-| Barbalha | CE | 80,0% | 66,5% | **100,0%** |
-| Brusque | SC | 70,5% | 61,1% | **100,0%** |
+As 15 maiores lacunas entre a taxa prevista e a meta pactuada (municípios com ≥100 alunos avaliados):
 
-> **Ressalva estatística.** O cálculo supõe independência condicional entre alunos. Como colegas de escola compartilham choques não observados, o erro-padrão real é maior e estas probabilidades são mais extremas do que deveriam. A **ordenação** é confiável; a magnitude, não.
+| município | UF | alunos | meta | taxa prevista | lacuna | prob. de não atingir |
+|---|---|---:|---:|---:|---:|---:|
+| Três Cachoeiras | RS | 114 | 80,0% | 58,9% | **-21,1 p.p.** | 100,0% |
+| Constantina | RS | 105 | 80,0% | 59,4% | **-20,6 p.p.** | 100,0% |
+| Bom Princípio | RS | 171 | 74,7% | 55,6% | **-19,1 p.p.** | 100,0% |
+| Paraibano | MA | 261 | 79,0% | 60,0% | **-19,0 p.p.** | 100,0% |
+| Lajeado | RS | 733 | 75,5% | 56,5% | **-19,0 p.p.** | 100,0% |
+| Venâncio Aires | RS | 487 | 78,4% | 59,7% | **-18,7 p.p.** | 100,0% |
+| Alcântara | MA | 110 | 74,5% | 56,0% | **-18,4 p.p.** | 100,0% |
+| Nova Hartz | RS | 244 | 73,3% | 55,4% | **-17,9 p.p.** | 100,0% |
+| Lagoa Grande do Maranhão | MA | 106 | 80,0% | 62,6% | **-17,4 p.p.** | 100,0% |
+| Santiago | RS | 392 | 73,9% | 56,7% | **-17,2 p.p.** | 100,0% |
+| Caxias do Sul | RS | 3.664 | 70,9% | 53,8% | **-17,1 p.p.** | 100,0% |
+| Panambi | RS | 513 | 76,0% | 59,5% | **-16,5 p.p.** | 100,0% |
+| Solânea | PB | 187 | 78,8% | 62,4% | **-16,3 p.p.** | 100,0% |
+| Parnarama | MA | 322 | 80,0% | 63,7% | **-16,3 p.p.** | 100,0% |
+| Sapiranga | RS | 826 | 73,9% | 57,6% | **-16,3 p.p.** | 100,0% |
+
+> **Ressalva estatística.** O cálculo supõe independência condicional entre alunos. Como colegas de escola compartilham choques não observados, o erro-padrão real é maior e estas probabilidades são mais extremas do que deveriam — em municípios grandes elas saturam em 100%, o que torna a própria probabilidade inútil para ordenar. Por isso a tabela é ordenada pela **lacuna em pontos percentuais**, que não satura. A ordenação é confiável; a magnitude da probabilidade, não.

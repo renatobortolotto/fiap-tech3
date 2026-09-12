@@ -70,7 +70,7 @@ Três objetivos derivados, que transformam a predição individual em decisão p
 ### O grão e a população
 
 Um registro por **aluno avaliado**: 3.354.661 crianças, em 2023 e 2024, distribuídas
-por 5.536 municípios.
+por 5.547 municípios — 26 das 27 unidades da federação (Roraima não aparece na base).
 
 A população exclui quem não fez a prova. Não é um filtro de conveniência — é uma
 exigência lógica verificada nos dados:
@@ -254,10 +254,21 @@ interpretável (contraprova) e três implementações de *gradient boosting*.
 
 ![curvas de avaliação](images/10_curvas_temporal.png)
 
-**O resultado mais informativo desta tabela é o empate.** Quatro modelos de famílias
-diferentes convergem em ROC AUC entre 0,636 e 0,637 — uma faixa de 0,001, menor que a
-incerteza amostral. Isso não é coincidência: **o teto é imposto pelos dados, não pelo
-algoritmo**. Sem nenhum atributo individual da criança (§9), o que resta é contexto
+**O resultado mais informativo desta tabela é o empate** — e ele foi testado, não
+suposto. Bootstrap **pareado** sobre o conjunto de teste (300 reamostras, mesmas
+reamostragens nos dois modelos comparados):
+
+| comparação | diferença de ROC AUC | IC 95% | p |
+|---|---:|---|---:|
+| LightGBM − Regressão logística | +0,0011 | [−0,0002; +0,0022] | 0,087 |
+| LightGBM − XGBoost | +0,0007 | [−0,0000; +0,0014] | 0,060 |
+| LightGBM − HistGradientBoosting | +0,0010 | [+0,0001; +0,0018] | 0,040 |
+
+**A vantagem do LightGBM sobre uma regressão logística não é estatisticamente
+distinguível** (p = 0,087), e nem sobre o XGBoost (p = 0,060). Só a diferença para o
+HistGradientBoosting cruza o limiar de 5%, por pouco.
+
+Isso não é coincidência: **o teto é imposto pelos dados, não pelo algoritmo**. Sem nenhum atributo individual da criança (§9), o que resta é contexto
 municipal, e contexto municipal é essencialmente aditivo. Trocar de algoritmo não
 compra ordenação porque não há interação escondida a descobrir.
 
@@ -266,9 +277,12 @@ loss de 0,667 para 0,644. Para uso em política pública isso importa mais do qu
 parece — é a diferença entre uma probabilidade que serve para dimensionar um programa
 de reforço e uma que apenas ordena.
 
-**LightGBM foi o escolhido** por vencer em ROC AUC e PR AUC com a melhor relação
-custo-benefício: 46 segundos de treino contra **523 segundos** do
-HistGradientBoosting para a mesma acurácia — um fator de 11×.
+**LightGBM foi o escolhido** por liderar em ROC AUC e PR AUC, ter o melhor Brier entre
+os modelos que também lideram a ordenação, e pela relação custo-benefício: 46 segundos
+de treino contra **523 segundos** do HistGradientBoosting para a mesma acurácia — um
+fator de 11×. Dado o empate estatístico, a escolha é legítima mas não decisiva: se a
+prioridade fosse transparência para um público não técnico, **a regressão logística
+seria defensável**, ao custo de calibração pior.
 
 **Nota contra a tentação de complicar.** Diante de um empate assim, a leitura correta
 não é "preciso de um modelo maior". É que o ganho está em obter dados melhores, não em
@@ -401,7 +415,7 @@ Agregando as probabilidades previstas por município, no conjunto de teste de 20
 | viés | **−3,3 p.p.** |
 | R² | 0,447 |
 
-![calibração municipal](images/20_calibracao_municipal.png)
+![calibração municipal](images/20_calibracao_municipal_temporal.png)
 
 **Leitura honesta destes números.** Um erro absoluto médio de 10,6 pontos percentuais
 não é pequeno — mas o desvio-padrão das taxas municipais é de cerca de 19 p.p., de modo
@@ -427,8 +441,17 @@ gaúcho — e todos "falharam" juntos. O resíduo bruto estava medindo **deriva 
 não desempenho relativo.
 
 A correção adotada é subtrair a mediana do resíduo da própria UF, produzindo o
-**resíduo ajustado**: o desvio do município em relação aos seus pares estaduais. É essa
-a coluna reportada em `reports/aplicacao_temporal.md` e a única com leitura de gestão.
+**resíduo ajustado**: o desvio do município em relação aos seus pares estaduais.
+
+O efeito é imediato — **nenhum município gaúcho permanece entre os dez piores**. A
+lista corrigida se concentra no Maranhão (4), Paraíba (2) e Mato Grosso do Sul (2):
+redes que vão mal *em relação aos seus próprios vizinhos de estado*, que é a pergunta
+que um gestor consegue acionar. É essa a coluna reportada em
+`reports/aplicacao_temporal.md`.
+
+Vale registrar o erro pelo que ele ensina: **a medida aparentemente mais sofisticada —
+o resíduo de um modelo — pode embutir um confundidor grosseiro**. Só a inspeção da
+lista final, e não a métrica agregada, revelou o problema.
 
 
 
@@ -485,6 +508,17 @@ trazem valores idênticos (0 divergências em 5.352 municípios).
 Consequência prática que vai além deste projeto: **"o município cumpriu a meta?" é uma
 pergunta quase equivalente a "o município melhorou em relação a si mesmo?"**, e não a
 uma referência externa de qualidade.
+
+Isso tem um efeito visível e verificável. Na projeção de quem ficará abaixo da meta,
+**as 15 maiores lacunas se concentram no Rio Grande do Sul** — não porque a gestão
+gaúcha tenha piorado em relação aos seus pares, mas porque as metas foram calibradas no
+patamar alto de 2023 (64,7%) e o estado recuou para 45,8% em 2024. A meta ficou
+ancorada num desempenho que a rede deixou de sustentar.
+
+Para um gestor, as duas leituras precisam ser separadas: **a lacuna até a meta** mede
+distância de um compromisso pactuado no passado; **o resíduo ajustado** (§7.5) mede
+desempenho relativo aos pares. Confundi-las leva a cobrar de uma rede algo que o
+indicador não está dizendo.
 
 ### 8.5 Pressão demográfica pesa mais que infraestrutura
 
@@ -656,7 +690,7 @@ O ajuste pela UF não é detalhe: sem ele, a lista se enche de municípios de um
 simplesmente teve um ano ruim (§7.5). O modelo serve, aqui, como o controle estatístico
 que uma comparação bruta não tem.
 
-![resíduos municipais](images/21_residuos_municipais.png)
+![resíduos municipais](images/21_residuos_municipais_temporal.png)
 
 **Dimensionar programas, com a margem explícita.** A probabilidade prevista é
 razoavelmente calibrada (Brier 0,227 contra 0,241 da taxa-base), então ela pode
@@ -682,10 +716,21 @@ estigma sem ganho de informação. O uso legítimo é **territorial e agregado**
 
 ## 11. Possíveis evoluções futuras
 
+Os resultados desta fase apontam uma direção clara, e ela não é "um modelo melhor".
+Quatro algoritmos empatam (§8.1) e nenhum bloco de features é insubstituível (§8.8):
+**o que limita o projeto é a ausência de variação observável dentro do município**.
+As evoluções abaixo estão ordenadas por esse critério.
+
 **Recuperar o grão da escola.** É a evolução de maior impacto, e não depende de
 técnica: depende de obter do INEP a chave de correspondência entre o identificador
 anônimo e o código do Censo Escolar. Com ela, entram INSE por escola, infraestrutura
-real e efeito de escola — hoje todos invisíveis.
+real e efeito de escola — hoje todos invisíveis. É a única mudança capaz de romper o
+teto medido, porque é a única que acrescenta informação que ainda não está nas 125
+colunas atuais.
+
+**Recalibrar a cada onda.** O viés medido de −3,3 p.p. (§7.4) é consequência direta de
+treinar no passado: 2024 foi melhor que 2023. Em uso recorrente, uma recalibração
+anual sobre a onda mais recente corrige o nível sem retreinar o modelo inteiro.
 
 **Modelo hierárquico (multinível).** A estrutura aluno ⊂ escola ⊂ município é
 naturalmente hierárquica. Um modelo de efeitos mistos estimaria a variância em cada
@@ -725,8 +770,12 @@ make dados           # exporta a ABT para data/processed/abt_aluno.parquet
 make eda             # análise exploratória -> images/ e reports/eda.md
 make modelo-a        # out-of-time (2023 -> 2024)
 make modelo-b        # espacial (2024, partição por município)
+make figuras         # redesenha as curvas e o painel por estrato, sem retreinar
+make comparar        # bootstrap pareado entre os modelos
+make tunar           # busca de hiperparâmetros com Optuna, sob CV agrupada
 make interpretar     # importâncias, SHAP e ablação por bloco
 make aplicacao       # risco municipal, agrupamentos e risco de meta
+make notebooks       # regenera os notebooks a partir de src/
 make testes          # 13 testes, incluindo os de antivazamento
 ```
 

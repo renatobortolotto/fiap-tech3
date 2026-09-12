@@ -62,8 +62,10 @@ def main(argv: list | None = None) -> int:
     ranking = aplicacao.ranking_risco_municipal(teste, prob)
     calib = aplicacao.calibracao_agregada(ranking)
     ranking.to_csv(REPORTS_DIR / f"risco_municipal_{args.desenho}.csv", index=False)
-    f_calib = plots.fig_calibracao_municipal(ranking, calib)
-    f_resid = plots.fig_residuos(ranking)
+    sufixo = args.desenho
+    f_calib = plots.fig_calibracao_municipal(
+        ranking, calib, nome=f"20_calibracao_municipal_{sufixo}")
+    f_resid = plots.fig_residuos(ranking, nome=f"21_residuos_municipais_{sufixo}")
 
     # --- 3. Agrupamento por perfil de contexto -------------------------------
     logger.info("Agrupamento de municípios em %d perfis", args.grupos)
@@ -72,7 +74,8 @@ def main(argv: list | None = None) -> int:
     perfil.to_csv(REPORTS_DIR / f"perfis_municipais_{args.desenho}.csv")
     municipios[["id_municipio", "grupo", ALVO]].to_csv(
         REPORTS_DIR / f"municipios_por_grupo_{args.desenho}.csv", index=False)
-    f_grupos = plots.fig_grupos(perfil, municipios)
+    f_grupos = plots.fig_grupos(perfil, municipios,
+                                nome=f"22_grupos_municipais_{sufixo}")
 
     # --- 4. Risco de não atingir a meta --------------------------------------
     metas_disponiveis = "mun_lag_meta_ano_alvo" in teste.columns and \
@@ -183,7 +186,11 @@ def main(argv: list | None = None) -> int:
                   f"{_v(r['taxa_observada']*100, 1)}% |")
 
     if not risco_meta.empty:
-        criticos = risco_meta[risco_meta["n_alunos"] >= 100].head(15)
+        # Ordenar pela probabilidade satura: em municípios grandes o erro-padrão é
+        # minúsculo e qualquer lacuna vira 100%, empatando dezenas de cidades no topo.
+        # A LACUNA em pontos percentuais é o que separa e o que informa o gestor.
+        criticos = (risco_meta[risco_meta["n_alunos"] >= 100]
+                    .nsmallest(15, "distancia_ate_meta_pp"))
         resumo = (risco_meta[risco_meta["n_alunos"] >= 100]["classificacao"]
                   .value_counts().sort_index())
         md += [
@@ -201,20 +208,42 @@ def main(argv: list | None = None) -> int:
             md.append(f"| {classe} | {_mil(n)} |")
         md += [
             "",
-            "| município | UF | meta | taxa prevista | prob. de não atingir |",
-            "|---|---|---:|---:|---:|",
+            "As 15 maiores lacunas entre a taxa prevista e a meta pactuada "
+            "(municípios com ≥100 alunos avaliados):",
+            "",
+            "| município | UF | alunos | meta | taxa prevista | lacuna | prob. de não atingir |",
+            "|---|---|---:|---:|---:|---:|---:|",
         ]
         for _, r in criticos.iterrows():
-            md.append(f"| {r['municipio']} | {r['uf']} | "
+            md.append(f"| {r['municipio']} | {r['uf']} | {_mil(r['n_alunos'])} | "
                       f"{_v(r['mun_lag_meta_ano_alvo'], 1)}% | "
                       f"{_v(r['taxa_prevista']*100, 1)}% | "
-                      f"**{_v(r['prob_nao_atingir']*100, 1)}%** |")
+                      f"**{_v(r['distancia_ate_meta_pp'], 1)} p.p.** | "
+                      f"{_v(r['prob_nao_atingir']*100, 1)}% |")
+        # Concentração por UF: informativa, porque revela o mecanismo.
+        concentracao = criticos["uf"].value_counts()
+        if not concentracao.empty and concentracao.iloc[0] >= 5:
+            uf_dominante = concentracao.index[0]
+            md += [
+                "",
+                f"> **Por que {uf_dominante} domina esta lista.** Não é artefato: as "
+                "metas do Compromisso Nacional foram pactuadas sobre o resultado de "
+                "2023 (§ decisões analíticas). Onde o estado recuou entre 2023 e 2024, "
+                "os municípios ficaram com metas calibradas num patamar que a rede "
+                "deixou de sustentar — e a lacuna projetada cresce por essa razão, não "
+                "por piora relativa de gestão. Para a leitura de gestão, use o "
+                "**resíduo ajustado** da seção anterior.",
+            ]
+
         md += [
             "",
             "> **Ressalva estatística.** O cálculo supõe independência condicional "
             "entre alunos. Como colegas de escola compartilham choques não observados, "
             "o erro-padrão real é maior e estas probabilidades são mais extremas do que "
-            "deveriam. A **ordenação** é confiável; a magnitude, não.",
+            "deveriam — em municípios grandes elas saturam em 100%, o que torna a "
+            "própria probabilidade inútil para ordenar. Por isso a tabela é ordenada "
+            "pela **lacuna em pontos percentuais**, que não satura. A ordenação é "
+            "confiável; a magnitude da probabilidade, não.",
         ]
 
     destino = REPORTS_DIR / f"aplicacao_{args.desenho}.md"

@@ -1,68 +1,68 @@
 feature,queda_auc,desvio,bloco
-id_municipio,0.05997592972506253,0.0007364306761641243,identificação geográfica
-edu_ideb_ai_rede_do_aluno,0.015112028987179412,0.00035044366948262296,educacional
-ter_mesorregiao,0.002595168706802912,0.00010271305116724118,território
-alu_rede,0.0009281329079317743,0.00018192010294583195,aluno
-edu_tdi_2ano,0.0008542460588451354,5.704734755594661e-05,educacional
-inf_pct_lab_informatica,0.0005907392790334883,4.261459333133104e-05,escola (infraestrutura)
-edu_saeb5_pct_lp_altos,0.0005240887904993293,3.958567705639025e-05,educacional
-inse_desvio_escolas,0.00047157714816625784,4.295085751797968e-05,escola (socioeconômico)
-edu_saeb_nota_mat,0.0004657882261762669,0.00023582573478458127,educacional
-fin_invest_aluno_ens_fund,0.000443465214181038,5.783952763169609e-05,município (financiamento)
-fin_pct_fundeb_educ_infantil,0.00043704571665637015,1.878821846882371e-05,município (financiamento)
-edu_alunos_por_turma_ai,0.00043565362337287067,6.523465068544261e-05,educacional
-inse_desvio_vs_uf,0.0004029399166967836,6.762207412017476e-05,escola (socioeconômico)
-inse_tamanho_medio_escola,0.0003828527013923037,9.820753551595354e-05,escola (socioeconômico)
-ses_prop_resp_sem_fundamental,0.0003610076146070007,5.092428428269335e-05,município (socioeconômico)
-inf_pct_refeitorio,0.00034017302997113585,9.125824411915943e-05,escola (infraestrutura)
-edu_saeb5_pct_lp_baixos,0.0003284925406115506,0.00010664378909921208,educacional
-edu_tdi_anos_iniciais,0.00031982961734755566,3.6183009304502056e-05,educacional
-ses_ivs_renda_trabalho,0.00031065714299971514,3.551934471656711e-05,município (socioeconômico)
-inf_matriculas_ai,0.0002920802018751741,5.6335573087047126e-05,escola (infraestrutura)
-inf_dispositivos_por_aluno,0.00028174929119258635,3.5303243139894405e-05,escola (infraestrutura)
-inf_pct_material_jogo,0.0002800026552195467,8.194583720297545e-05,escola (infraestrutura)
-inf_alunos_por_docente_ai,0.00026964053479309563,0.0001194847136351369,escola (infraestrutura)
-fin_pct_fundeb_ens_fund,0.00024729387274746717,3.8783352107401556e-05,município (financiamento)
-edu_aprovacao_ai_lag1,0.0002206749435506028,6.872439862904869e-05,educacional
-fin_pct_educacao_sobre_desp_total,0.000219046002989239,5.408062097107404e-05,município (financiamento)
-inf_pct_urbana,0.00021599098520116064,1.4480832761125402e-05,escola (infraestrutura)
-ses_indice_envelhecimento,0.00017510830147286308,3.560796598172556e-05,município (socioeconômico)
-fin_log_desp_educacao,0.00017422333184868855,5.268516191389441e-05,município (financiamento)
-ses_idhm_educacao,0.0001737499147127138,2.6623770564937334e-05,município (socioeconômico)
-ses_share_domicilio_precario,0.0001711706721301276,4.5567680404395416e-05,município (socioeconômico)
-edu_saeb5_media_lp,0.0001699768647522859,6.240536911950629e-05,educacional
-sigla_uf,0.00016448207725890582,0.00032327815567175644,identificação geográfica
-inf_pct_conselho_escolar,0.0001606525029846928,6.0285767439238924e-05,escola (infraestrutura)
-ses_valor_pbf_per_capita_atual,0.00015154924491311839,3.7439592052376057e-05,município (socioeconômico)
-edu_esforco_docente_n6,0.00014100728700742562,3.5069300901989224e-05,educacional
-inf_pct_quadra,0.00014083979471564886,5.432995908612005e-05,escola (infraestrutura)
-ses_prop_pobreza_criancas,0.00013457703945977487,3.400884663857648e-05,município (socioeconômico)
-edu_abandono_ai_lag1,0.00013417755473917511,5.40868828634003e-05,educacional
-inf_pct_tempo_integral_ai,0.00013312342830362756,8.328106370604305e-05,escola (infraestrutura)
-inf_alunos_por_turma_ai,0.00013289733104856113,5.748255988188141e-05,escola (infraestrutura)
-edu_ideb_variacao,0.00013121436295286207,1.3706740860467965e-05,educacional
-ses_cobertura_pbf_atual,0.00012259901720938307,4.148080650796089e-06,município (socioeconômico)
-inse_medio_uf,0.00011752306447776473,6.680183114618253e-05,escola (socioeconômico)
-ses_prop_domicilio_denso,0.00011740821262059183,3.9246699518252056e-05,município (socioeconômico)
-ses_prop_mae_sem_fundamental,0.00010779900992456219,5.4967388894253705e-05,município (socioeconômico)
-ses_taxa_alfabetizacao_15mais,0.00010728176043732034,3.3329435836730535e-05,município (socioeconômico)
-edu_saeb_nota_lp,0.00010464467579618386,1.934462002866497e-05,educacional
-inse_pct_escolas_rurais,9.973649277624415e-05,4.892537018068127e-05,escola (socioeconômico)
-ter_longitude,9.698476434298146e-05,1.2054907087906583e-05,território
-ses_log_renda_per_capita,9.605949947174193e-05,3.430846101803712e-05,município (socioeconômico)
+id_municipio,0.0599759297250625,0.0007364306761641,identificação geográfica
+edu_ideb_ai_rede_do_aluno,0.0151120289871794,0.0003504436694826,educacional
+ter_mesorregiao,0.0025951687068029,0.0001027130511672,território
+alu_rede,0.0009281329079317,0.0001819201029458,aluno
+edu_tdi_2ano,0.0008542460588451,5.704734755594661e-05,educacional
+inf_pct_lab_informatica,0.0005907392790334,4.261459333133104e-05,escola (infraestrutura)
+edu_saeb5_pct_lp_altos,0.0005240887904993,3.958567705639025e-05,educacional
+inse_desvio_escolas,0.0004715771481662,4.295085751797968e-05,escola (socioeconômico)
+edu_saeb_nota_mat,0.0004657882261762,0.0002358257347845,educacional
+fin_invest_aluno_ens_fund,0.000443465214181,5.783952763169609e-05,município (financiamento)
+fin_pct_fundeb_educ_infantil,0.0004370457166563,1.878821846882371e-05,município (financiamento)
+edu_alunos_por_turma_ai,0.0004356536233728,6.523465068544261e-05,educacional
+inse_desvio_vs_uf,0.0004029399166967,6.762207412017476e-05,escola (socioeconômico)
+inse_tamanho_medio_escola,0.0003828527013923,9.820753551595354e-05,escola (socioeconômico)
+ses_prop_resp_sem_fundamental,0.000361007614607,5.092428428269335e-05,município (socioeconômico)
+inf_pct_refeitorio,0.0003401730299711,9.125824411915944e-05,escola (infraestrutura)
+edu_saeb5_pct_lp_baixos,0.0003284925406115,0.0001066437890992,educacional
+edu_tdi_anos_iniciais,0.0003198296173475,3.6183009304502056e-05,educacional
+ses_ivs_renda_trabalho,0.0003106571429997,3.551934471656711e-05,município (socioeconômico)
+inf_matriculas_ai,0.0002920802018751,5.6335573087047126e-05,escola (infraestrutura)
+inf_dispositivos_por_aluno,0.0002817492911925,3.5303243139894405e-05,escola (infraestrutura)
+inf_pct_material_jogo,0.0002800026552195,8.194583720297545e-05,escola (infraestrutura)
+inf_alunos_por_docente_ai,0.000269640534793,0.0001194847136351,escola (infraestrutura)
+fin_pct_fundeb_ens_fund,0.0002472938727474,3.878335210740156e-05,município (financiamento)
+edu_aprovacao_ai_lag1,0.0002206749435506,6.872439862904869e-05,educacional
+fin_pct_educacao_sobre_desp_total,0.0002190460029892,5.408062097107404e-05,município (financiamento)
+inf_pct_urbana,0.0002159909852011,1.4480832761125402e-05,escola (infraestrutura)
+ses_indice_envelhecimento,0.0001751083014728,3.560796598172556e-05,município (socioeconômico)
+fin_log_desp_educacao,0.0001742233318486,5.268516191389441e-05,município (financiamento)
+ses_idhm_educacao,0.0001737499147127,2.662377056493733e-05,município (socioeconômico)
+ses_share_domicilio_precario,0.0001711706721301,4.5567680404395416e-05,município (socioeconômico)
+edu_saeb5_media_lp,0.0001699768647522,6.240536911950629e-05,educacional
+sigla_uf,0.0001644820772589,0.0003232781556717,identificação geográfica
+inf_pct_conselho_escolar,0.0001606525029846,6.028576743923893e-05,escola (infraestrutura)
+ses_valor_pbf_per_capita_atual,0.0001515492449131,3.7439592052376057e-05,município (socioeconômico)
+edu_esforco_docente_n6,0.0001410072870074,3.5069300901989224e-05,educacional
+inf_pct_quadra,0.0001408397947156,5.432995908612005e-05,escola (infraestrutura)
+ses_prop_pobreza_criancas,0.0001345770394597,3.400884663857648e-05,município (socioeconômico)
+edu_abandono_ai_lag1,0.0001341775547391,5.40868828634003e-05,educacional
+inf_pct_tempo_integral_ai,0.0001331234283036,8.328106370604305e-05,escola (infraestrutura)
+inf_alunos_por_turma_ai,0.0001328973310485,5.748255988188141e-05,escola (infraestrutura)
+edu_ideb_variacao,0.0001312143629528,1.3706740860467964e-05,educacional
+ses_cobertura_pbf_atual,0.0001225990172093,4.148080650796089e-06,município (socioeconômico)
+inse_medio_uf,0.0001175230644777,6.680183114618253e-05,escola (socioeconômico)
+ses_prop_domicilio_denso,0.0001174082126205,3.9246699518252056e-05,município (socioeconômico)
+ses_prop_mae_sem_fundamental,0.0001077990099245,5.4967388894253705e-05,município (socioeconômico)
+ses_taxa_alfabetizacao_15mais,0.0001072817604373,3.3329435836730535e-05,município (socioeconômico)
+edu_saeb_nota_lp,0.0001046446757961,1.934462002866497e-05,educacional
+inse_pct_escolas_rurais,9.973649277624416e-05,4.892537018068127e-05,escola (socioeconômico)
+ter_longitude,9.698476434298146e-05,1.2054907087906585e-05,território
+ses_log_renda_per_capita,9.605949947174192e-05,3.430846101803712e-05,município (socioeconômico)
 ses_mortalidade_infantil,9.402129513661854e-05,2.352659718454568e-05,município (socioeconômico)
 ses_share_pop_0a14,9.06035507705812e-05,4.218345469233745e-05,município (socioeconômico)
-ses_taxa_pbf,7.795764000284588e-05,1.7544864285366957e-06,município (socioeconômico)
+ses_taxa_pbf,7.795764000284588e-05,1.7544864285366955e-06,município (socioeconômico)
 ses_idade_mediana,7.17599397240809e-05,2.402786630638927e-05,município (socioeconômico)
 ses_prop_vulneravel,7.099460745115434e-05,2.355359386585028e-05,município (socioeconômico)
-ter_regiao,5.5646418355241124e-05,4.352189771526529e-05,território
+ter_regiao,5.564641835524112e-05,4.352189771526529e-05,território
 inf_pct_energia_publica,4.981914305783134e-05,1.2873812284107647e-05,escola (infraestrutura)
-ses_taxa_cadunico,2.7550297306833116e-05,5.582357985679877e-05,município (socioeconômico)
-inf_n_escolas_ai,2.7406663130280506e-05,5.984613461765586e-05,escola (infraestrutura)
-ses_share_indigena_quilombola,2.7138328688688002e-05,2.6687471559144e-05,município (socioeconômico)
-fin_pct_complementacao_uniao,2.2113837356803796e-05,3.3167987724985816e-05,município (financiamento)
+ses_taxa_cadunico,2.755029730683312e-05,5.582357985679877e-05,município (socioeconômico)
+inf_n_escolas_ai,2.7406663130280503e-05,5.984613461765586e-05,escola (infraestrutura)
+ses_share_indigena_quilombola,2.7138328688688e-05,2.6687471559144e-05,município (socioeconômico)
+fin_pct_complementacao_uniao,2.21138373568038e-05,3.3167987724985816e-05,município (financiamento)
 fin_log_receita_fundeb,1.8384272972737925e-05,5.671674835401988e-05,município (financiamento)
-ses_taxa_freq_escola_5_6,1.573532862893708e-05,9.151871596112135e-05,município (socioeconômico)
+ses_taxa_freq_escola_5_6,1.573532862893708e-05,9.151871596112136e-05,município (socioeconômico)
 inse_medio,1.5458532878912894e-05,8.187337962877569e-05,escola (socioeconômico)
 fin_pct_fundeb_nao_aplicado,1.047835938335536e-05,3.526444497839285e-05,município (financiamento)
 edu_regularidade_docente_baixa,1.0212868496080793e-05,4.908682712803966e-05,educacional
@@ -72,22 +72,22 @@ ses_taxa_alfab_adultos_25a44,6.26060525118118e-06,8.08591823174113e-05,municípi
 edu_reprovacao_ai_lag1,5.343732333333111e-06,4.057125706330853e-05,educacional
 ter_capital_uf,0.0,0.0,território
 inf_pct_alimentacao,0.0,0.0,escola (infraestrutura)
-ter_amazonia_legal,-9.272068108116353e-07,1.607290752258703e-06,território
-edu_ideb_imputado_uf,-2.9387094762448975e-06,3.9778581215895666e-07,educacional
-inf_pct_biblioteca_leitura,-3.1317937579193136e-06,2.8725578251043274e-05,escola (infraestrutura)
+ter_amazonia_legal,-9.272068108116351e-07,1.607290752258703e-06,território
+edu_ideb_imputado_uf,-2.938709476244897e-06,3.9778581215895676e-07,educacional
+inf_pct_biblioteca_leitura,-3.1317937579193136e-06,2.8725578251043277e-05,escola (infraestrutura)
 edu_complexidade_gestao_n1,-4.585404914140649e-06,2.635524453434469e-05,educacional
 inf_pct_banda_larga,-7.162705557117732e-06,4.1068274708012096e-05,escola (infraestrutura)
-edu_saeb5_gap_urbano_rural_lp,-1.2333605264869263e-05,8.13500056154604e-05,educacional
+edu_saeb5_gap_urbano_rural_lp,-1.2333605264869265e-05,8.13500056154604e-05,educacional
 fin_invest_aluno_educ_basica,-1.780314754325681e-05,3.200101964092498e-05,município (financiamento)
-inf_pct_agua_potavel,-2.3857421710515858e-05,4.9061661143600665e-05,escola (infraestrutura)
+inf_pct_agua_potavel,-2.3857421710515855e-05,4.9061661143600665e-05,escola (infraestrutura)
 ses_ivs_capital_humano,-2.4083033480707765e-05,6.009634479829494e-06,município (socioeconômico)
 edu_esforco_docente_n1,-2.437418571284618e-05,1.6732449543823125e-05,educacional
-ses_gini,-3.1215292198775536e-05,1.1943235218782217e-05,município (socioeconômico)
+ses_gini,-3.1215292198775536e-05,1.1943235218782215e-05,município (socioeconômico)
 ses_taxa_atraso_2anos_fund,-3.6940407601456414e-05,3.6029759254631887e-05,município (socioeconômico)
 ses_share_pop_5a9,-3.7926912925478895e-05,1.2401188313534244e-05,município (socioeconômico)
 ses_prop_crianca_fora_escola,-3.976024263126673e-05,4.999460519859955e-05,município (socioeconômico)
 ses_ivs_infra_urbana,-4.062516866454313e-05,8.846859914930987e-05,município (socioeconômico)
-ses_pib_per_capita,-4.3978274183305764e-05,3.6818751147581735e-05,município (socioeconômico)
+ses_pib_per_capita,-4.397827418330576e-05,3.6818751147581735e-05,município (socioeconômico)
 ses_moradores_por_domicilio,-4.418411978242739e-05,7.12232671897623e-05,município (socioeconômico)
 ses_log_populacao,-4.773786927643927e-05,7.979464204250312e-05,município (socioeconômico)
 inf_pct_prof_pedagogia,-4.942499867129543e-05,1.4511920232908958e-05,escola (infraestrutura)
@@ -100,27 +100,27 @@ ses_share_esgoto_inadequado,-7.534774251645911e-05,1.7055587835029204e-05,munic�
 inf_pct_parque_infantil,-7.73564016273894e-05,7.14068498850313e-05,escola (infraestrutura)
 edu_afd_grupo1_ai,-7.764200546063933e-05,5.755732011737865e-05,educacional
 inse_pct_niveis_altos,-8.866258212629023e-05,8.228870770333594e-05,escola (socioeconômico)
-ses_ivs,-9.291730246604087e-05,4.7218025082743534e-05,município (socioeconômico)
+ses_ivs,-9.291730246604088e-05,4.7218025082743534e-05,município (socioeconômico)
 fin_pct_ens_fund_sobre_educacao,-9.369796219101574e-05,5.475995532571334e-06,município (financiamento)
 edu_ideb_ai_uf,-9.627810638842178e-05,6.889378271574868e-05,educacional
-fin_pct_mde_sobre_impostos,-0.00010590506396090937,7.164813682990394e-05,município (financiamento)
-inf_pct_lixo_coleta,-0.00010801088940763186,7.437310384876368e-05,escola (infraestrutura)
-ses_densidade_demografica,-0.0001105716142088357,5.201121766283459e-05,município (socioeconômico)
-fin_desp_professor_por_aluno,-0.00011426802690957712,7.387463334675328e-05,município (financiamento)
-ses_expectativa_anos_estudo,-0.00012543348614135752,3.921359394711446e-05,município (socioeconômico)
-edu_docentes_superior_ai,-0.00012846173290477955,8.593928232598534e-05,educacional
-inse_n_escolas,-0.00012991985213510007,4.2138981672632305e-05,escola (socioeconômico)
-ses_fecundidade_total,-0.0001352043553103366,2.794320556705645e-05,município (socioeconômico)
-edu_ideb_ai_publica,-0.00014153806071707611,0.00010444966823140546,educacional
-edu_ideb_ai_publica_imputado,-0.00015243962422636,2.6361709128990683e-05,educacional
-ses_razao_pbf_cadunico,-0.00015403069696521646,5.694079713130602e-05,município (socioeconômico)
-ter_latitude,-0.0001572090279188254,6.520634173539752e-05,território
-inse_min_escola,-0.0001698394031697618,2.3483938155107407e-05,escola (socioeconômico)
-edu_gap_tdi_rural_urbana,-0.00020953146984951468,4.4268334025105065e-05,educacional
-inf_pct_esgoto_publico,-0.0002677685743600611,1.8161577397537986e-05,escola (infraestrutura)
-inf_pct_internet_aprendizagem,-0.00031467702735621383,2.895787181079781e-05,escola (infraestrutura)
-edu_ideb_indicador_rendimento,-0.0003421164260400955,7.616658965805637e-05,educacional
-fin_pct_fundeb_sobre_desp_total,-0.0004141987277402152,9.93738500615448e-05,município (financiamento)
-fin_pct_desp_ens_fund_sobre_educ,-0.00047805317000482184,4.599672928046661e-05,município (financiamento)
-alu_caderno,-0.0005402000925087321,6.739000768430097e-05,aluno
-edu_ideb_taxa_aprovacao,-0.0005638642218725639,1.8700572792889715e-05,educacional
+fin_pct_mde_sobre_impostos,-0.0001059050639609,7.164813682990394e-05,município (financiamento)
+inf_pct_lixo_coleta,-0.0001080108894076,7.437310384876368e-05,escola (infraestrutura)
+ses_densidade_demografica,-0.0001105716142088,5.201121766283459e-05,município (socioeconômico)
+fin_desp_professor_por_aluno,-0.0001142680269095,7.387463334675328e-05,município (financiamento)
+ses_expectativa_anos_estudo,-0.0001254334861413,3.921359394711446e-05,município (socioeconômico)
+edu_docentes_superior_ai,-0.0001284617329047,8.593928232598534e-05,educacional
+inse_n_escolas,-0.0001299198521351,4.213898167263231e-05,escola (socioeconômico)
+ses_fecundidade_total,-0.0001352043553103,2.794320556705645e-05,município (socioeconômico)
+edu_ideb_ai_publica,-0.000141538060717,0.0001044496682314,educacional
+edu_ideb_ai_publica_imputado,-0.0001524396242263,2.6361709128990683e-05,educacional
+ses_razao_pbf_cadunico,-0.0001540306969652,5.694079713130602e-05,município (socioeconômico)
+ter_latitude,-0.0001572090279188,6.520634173539752e-05,território
+inse_min_escola,-0.0001698394031697,2.3483938155107407e-05,escola (socioeconômico)
+edu_gap_tdi_rural_urbana,-0.0002095314698495,4.4268334025105065e-05,educacional
+inf_pct_esgoto_publico,-0.00026776857436,1.8161577397537983e-05,escola (infraestrutura)
+inf_pct_internet_aprendizagem,-0.0003146770273562,2.895787181079781e-05,escola (infraestrutura)
+edu_ideb_indicador_rendimento,-0.00034211642604,7.616658965805637e-05,educacional
+fin_pct_fundeb_sobre_desp_total,-0.0004141987277402,9.93738500615448e-05,município (financiamento)
+fin_pct_desp_ens_fund_sobre_educ,-0.0004780531700048,4.599672928046661e-05,município (financiamento)
+alu_caderno,-0.0005402000925087,6.739000768430097e-05,aluno
+edu_ideb_taxa_aprovacao,-0.0005638642218725,1.8700572792889715e-05,educacional

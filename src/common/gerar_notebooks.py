@@ -212,14 +212,23 @@ Duas AUCs diferentes não bastam: é preciso saber se a diferença excede a ince
 amostral. O bootstrap **pareado** usa as mesmas reamostragens nos dois modelos,
 eliminando a variância comum."""),
         _code("""from src.evaluation.metrics import comparar_bootstrap, ic_bootstrap
-import numpy as np
 
 y = resultado_a["teste"][ALVO].astype(int).to_numpy()
 probs = resultado_a["probabilidades"]
-melhor, segundo = list(resultado_a["metricas"].index[:2])
+reais = [m for m in resultado_a["metricas"].index if m != "referencia"]
+vencedor = reais[0]
 
-print(f"{melhor}: AUC e IC 95% =", tuple(round(v, 4) for v in ic_bootstrap(y, probs[melhor])))
-print(f"{melhor} vs {segundo}:", comparar_bootstrap(y, probs[segundo], probs[melhor]))"""),
+for m in reais:
+    v, lo, hi = ic_bootstrap(y, probs[m])
+    print(f"{m:12} ROC AUC = {v:.4f}  IC 95% [{lo:.4f}, {hi:.4f}]")
+
+print()
+for m in reais[1:]:
+    r = comparar_bootstrap(y, probs[m], probs[vencedor])
+    print(f"{vencedor} - {m:12} = {r['diferenca']:+.4f}  p = {r['p_valor']:.3f}")"""),
+        _md("""O resultado é um **empate estatístico**: a vantagem do LightGBM sobre a
+regressão logística não é distinguível da incerteza amostral (p ≈ 0,09). O teto é
+imposto pelos dados, não pelo algoritmo — ver §5 e §8.1 do README."""),
         _md("""## Otimização de hiperparâmetros
 
 A busca roda sob **validação cruzada agrupada por município**. Sem o agrupamento, o
@@ -287,14 +296,20 @@ ranking = aplicacao.ranking_risco_municipal(teste, prob)
 calib = aplicacao.calibracao_agregada(ranking)
 calib"""),
         _code("""plots.fig_calibracao_municipal(ranking, calib)"""),
-        _md("""### A coluna acionável: o resíduo
+        _md("""### A coluna acionável: o resíduo ajustado pela UF
 
 O risco absoluto em geral só reflete a pobreza do território. O **resíduo**
-(observado − previsto) isola o que o contexto não explica: muito negativo aponta
-problema de gestão; muito positivo, prática que merece ser estudada."""),
+(observado − previsto) isola o que o contexto não explica.
+
+Mas o resíduo bruto tem um defeito que apareceu na prática: **confunde gestão
+municipal com deriva do estado inteiro**. Como o Rio Grande do Sul caiu 18,9 p.p.
+entre 2023 e 2024, municípios gaúchos ocupavam 4 das 10 piores posições — por um
+motivo que nada tem a ver com as redes municipais. A coluna usada é o
+`residuo_ajustado`: o resíduo menos a mediana do resíduo da própria UF."""),
         _code("""plots.fig_residuos(ranking)"""),
-        _code("""ranking[ranking["n_alunos"] >= 100].nsmallest(10, "residuo")[
-    ["municipio", "uf", "n_alunos", "taxa_observada", "taxa_prevista", "residuo"]]"""),
+        _code("""ranking[ranking["n_alunos"] >= 100].nsmallest(10, "residuo_ajustado")[
+    ["municipio", "uf", "n_alunos", "taxa_observada", "taxa_prevista",
+     "residuo", "residuo_ajustado"]]"""),
         _md("""## Regiões com padrões semelhantes
 
 Agrupamento por **contexto**, com o alvo deliberadamente de fora — assim a taxa de
