@@ -139,6 +139,16 @@ def executar(
     print(f"\nModelo '{melhor}' por estrato de cobertura territorial:")
     print(por_estrato.round(4).to_string())
 
+    # Curvas ROC / precisão-revocação / calibração e o painel por estrato
+    from ..visualization import plots
+    y_teste = teste[ALVO].astype(int).to_numpy()
+    caminho_curvas = plots.fig_curvas(
+        y_teste, {n: probabilidades[n] for n in quadro.index if n != "referencia"},
+        desenho)
+    caminho_estratos = plots.fig_metricas_por_estrato(por_estrato, desenho)
+    logger.info("Figuras: %s | %s",
+                caminho_curvas.split("/")[-1], caminho_estratos.split("/")[-1])
+
     if salvar:
         destino = REPORTS_DIR / f"metricas_{desenho}.csv"
         quadro.to_csv(destino)

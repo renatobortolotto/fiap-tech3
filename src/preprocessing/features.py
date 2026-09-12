@@ -34,6 +34,21 @@ VAZADAS = [
     "preenchimento_caderno",   # idem
 ]
 
+# --- Artefatos do desenho amostral -------------------------------------------
+# `alu_peso_amostral` é o peso do desenho amostral do INEP, não um atributo da
+# criança. Dois motivos para deixá-lo fora, o segundo decisivo:
+#
+# 1. Semântico — descreve como a amostra foi construída, não a aluna ou o aluno.
+#    Serve para ponderar estatísticas descritivas, não para prever um desfecho.
+# 2. Empírico — a metodologia de ponderação MUDOU entre os dois anos: 2023 tem
+#    13.185 valores distintos com mínimo 0,095; 2024 tem 540 valores distintos com
+#    mínimo 1,0. No desenho out-of-time isso é deriva de covariável pura: o modelo
+#    aprenderia em 2023 uma relação que não existe em 2024.
+#
+# Verificado que NÃO é vazamento (correlação com o alvo de -0,045 em 2023 e -0,066
+# em 2024) — a exclusão é por rigor metodológico, não por contaminação.
+ARTEFATOS_AMOSTRAIS = ["alu_peso_amostral"]
+
 # --- Categóricas de alta cardinalidade ---------------------------------------
 # Recebem TargetEncoder, cujo `fit_transform` do scikit-learn faz o encoding
 # FORA-DA-DOBRA (validação cruzada interna) — o antídoto para o vazamento
@@ -93,12 +108,13 @@ def selecionar_features(
 ) -> list[str]:
     """Colunas utilizáveis como feature.
 
-    Remove alvo, identificadores e colunas vazadas. Quando ``permitir_defasadas``
+    Remove alvo, identificadores, colunas vazadas e artefatos do desenho amostral. Quando ``permitir_defasadas``
     é False (Modelo A, out-of-time), remove também tudo que depende de histórico
     t-1 — inexistente para os alunos de 2023. ``blocos_excluidos`` recebe prefixos
     e serve aos experimentos de ablação por bloco.
     """
-    descartar = set(IDENTIFICADORES) | {ALVO} | set(VAZADAS)
+    descartar = (set(IDENTIFICADORES) | {ALVO} | set(VAZADAS)
+                 | set(ARTEFATOS_AMOSTRAIS))
     feats = [c for c in colunas if c not in descartar]
     if not permitir_defasadas:
         feats = [c for c in feats if not c.startswith(PREFIXOS_DEFASADOS)]

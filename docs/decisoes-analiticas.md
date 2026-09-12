@@ -129,7 +129,12 @@ predição — um resultado de interesse direto para política pública.
 
 **O teste out-of-time não é só "um ano depois" — a geografia muda.** Três unidades da
 federação aparecem apenas em 2024: **AC, DF e SP**. São 676 municípios novos e
-**428.119 alunos, ou 23,1% do conjunto de teste**, sem qualquer presença em 2023. Há
+**428.119 alunos, ou 23,1% do conjunto de teste**, sem qualquer presença em 2023.
+São Paulo sozinho responde por 395.444 desses alunos — o maior estado do país entra
+na base exatamente no ano de teste.
+
+**Roraima não existe na base**, em nenhum dos dois anos. A cobertura é de 26 das 27
+unidades da federação e de 5.547 dos 5.570 municípios brasileiros. Há
 também deriva real de nível nas UFs presentes nos dois anos: o Rio Grande do Sul cai
 18,9 p.p. (64,7% -> 45,8%) e Minas Gerais sobe 11,7 p.p. (60,9% -> 72,6%).
 
