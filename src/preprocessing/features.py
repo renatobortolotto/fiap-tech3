@@ -5,7 +5,6 @@ Isso mantém a engenharia de atributos legível e torna trivial ligar/desligar b
 inteiros nos experimentos de ablação.
 
     alu_*    atributos do próprio aluno (poucos: a base de microdados é enxuta)
-    esc_*    contexto histórico da escola — exige defasagem temporal
     inf_*    infraestrutura e porte da escola (Censo Escolar)
     inse_*   nível socioeconômico da escola (INSE/INEP)
     edu_*    indicadores educacionais da escola/município (INEP)
@@ -50,11 +49,14 @@ CATEGORICAS_ALTA_CARDINALIDADE = ["id_municipio", "sigla_uf", "ter_mesorregiao"]
 # --- Prefixos que dependem de histórico defasado -----------------------------
 # Só existem para alunos de 2024 (não há 2022 na base). O Modelo A NÃO pode
 # usá-los; o Modelo B (operacional, 2024) usa.
-PREFIXOS_DEFASADOS = ("mun_lag_", "esc_lag_", "uf_lag_")
+#
+# Não há prefixo de escola aqui: `id_escola` é renumerado a cada ano (só 2,4% dos
+# identificadores presentes nos dois anos apontam para o mesmo município), o que
+# torna impossível qualquer feature longitudinal escolar. Ver docs §3.
+PREFIXOS_DEFASADOS = ("mun_lag_", "uf_lag_")
 
 _MAPA_BLOCOS = {
     "alu_": "aluno",
-    "esc_": "escola (histórico)",
     "inf_": "escola (infraestrutura)",
     "inse_": "escola (socioeconômico)",
     "edu_": "educacional",

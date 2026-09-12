@@ -170,3 +170,53 @@ def tabela_metricas(resultados: dict[str, dict]) -> pd.DataFrame:
              "precisao", "mcc", "brier", "log_loss", "limiar", "n", "taxa_base"]
     cols = [c for c in ordem if c in df.columns]
     return df[cols].sort_values("roc_auc", ascending=False)
+
+
+def estratos_de_cobertura(treino: "pd.DataFrame", teste: "pd.DataFrame") -> "pd.Series":
+    """Classifica cada linha do teste pelo quanto o treino já conhecia seu território.
+
+    A partição temporal 2023 -> 2024 não é só "um ano depois": três unidades da
+    federação (AC, DF, SP) aparecem SÓ em 2024, e 676 municípios novos respondem por
+    23,1% do conjunto de teste. Uma métrica única sobre esse teste mistura duas
+    capacidades distintas:
+
+    * **município visto** — generalização TEMPORAL pura: a mesma rede, um ano depois.
+    * **município novo, UF vista** — generalização espacial dentro de um contexto
+      regional conhecido.
+    * **UF nova** — EXTRAPOLAÇÃO para um estado que o modelo nunca viu. É o cenário
+      mais duro e o mais informativo sobre transferibilidade.
+
+    Reportar os três separadamente é o que permite dizer *o que* o modelo sabe fazer.
+    """
+    municipios = set(treino["id_municipio"].unique())
+    ufs = set(treino["sigla_uf"].unique())
+    return pd.Series(
+        np.where(teste["id_municipio"].isin(municipios), "município visto",
+                 np.where(teste["sigla_uf"].isin(ufs),
+                          "município novo (UF vista)", "UF nova")),
+        index=teste.index,
+        name="estrato",
+    )
+
+
+def avaliar_por_estrato(
+    y: np.ndarray,
+    p: np.ndarray,
+    estratos: "pd.Series",
+    limiar: float | None = None,
+) -> pd.DataFrame:
+    """Painel de métricas por estrato de cobertura, mais a linha do total."""
+    y = np.asarray(y).astype(int)
+    p = np.asarray(p, dtype=float)
+    estratos = np.asarray(estratos)
+
+    linhas = {"(total)": avaliar(y, p, limiar)}
+    for nome in pd.unique(estratos):
+        mascara = estratos == nome
+        if mascara.sum() < 500 or len(np.unique(y[mascara])) < 2:
+            continue
+        linhas[nome] = avaliar(y[mascara], p[mascara], limiar)
+    df = pd.DataFrame(linhas).T
+    colunas = ["n", "taxa_base", "roc_auc", "pr_auc", "ks",
+               "acuracia_balanceada", "brier"]
+    return df[[c for c in colunas if c in df.columns]]

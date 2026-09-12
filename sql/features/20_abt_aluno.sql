@@ -6,13 +6,18 @@
 -- "sem dado" é, aqui, uma informação sobre o município e não um acidente.
 --
 -- Convenção de prefixos (ver src/preprocessing/features.py):
---   alu_  aluno | esc_lag_ escola (histórico) | inf_ escola (infraestrutura)
+--   alu_  aluno | inf_ escola (infraestrutura)
 --   inse_ escola (socioeconômico) | edu_ educacional | mun_ município (educacional)
 --   ses_  município (socioeconômico) | fin_ município (financiamento)
 --   ter_  território | uf_lag_ UF
 --
 -- Chave de junção dos blocos externos: (ano, id_municipio, rede). O grão escolar é
--- inalcançável porque o id_escola dos microdados é anonimizado (docs §6).
+-- inalcançável por DOIS motivos independentes, ambos verificados (docs §6):
+--   1. `id_escola` não corresponde ao código INEP (0 de 42.811 casam), o que
+--      impede ligar qualquer fonte externa à escola;
+--   2. `id_escola` é RENUMERADO a cada ano (só 2,4% dos identificadores presentes
+--      nos dois anos apontam para o mesmo município), o que impede qualquer
+--      feature longitudinal de escola construída dentro da própria base.
 CREATE OR REPLACE TABLE `{features}.abt_aluno`
 PARTITION BY RANGE_BUCKET(ano, GENERATE_ARRAY(2023, 2031, 1))
 CLUSTER BY id_municipio
@@ -33,12 +38,6 @@ SELECT
     p.caderno     AS alu_caderno,
     p.rede        AS alu_rede,
     p.peso_aluno  AS alu_peso_amostral,
-
-    -- Bloco: escola (histórico próprio, t-1)
-    e.esc_lag_taxa_observada,
-    e.esc_lag_taxa_suavizada,
-    e.esc_lag_desvio_vs_municipio,
-    e.esc_lag_n_avaliados,
 
     -- Bloco: município (educacional, t-1) e metas
     m.mun_lag_taxa_observada,
@@ -194,8 +193,6 @@ SELECT
     t.uf_lag_ranking
 
 FROM `{features}.populacao_avaliada` p
-LEFT JOIN `{features}.ctx_escola_lag` e
-    ON e.ano_alvo = p.ano AND e.id_escola = p.id_escola
 LEFT JOIN `{features}.ctx_municipio_lag` m
     ON m.ano_alvo = p.ano AND m.id_municipio = p.id_municipio
 LEFT JOIN `{features}.ctx_territorio` t
