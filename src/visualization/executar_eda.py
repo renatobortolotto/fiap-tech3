@@ -40,7 +40,19 @@ def main() -> int:
     f4 = eda.fig_top_correlacoes(corr)
 
     logger.info("5/7 perfil por decil")
-    principais = [c for c in corr.head(6)["feature"] if c in df.columns][:4]
+    # Uma feature por BLOCO, e não as quatro de maior correlação: o topo do ranking é
+    # inteiramente `mun_lag_*`, e quatro painéis da mesma variável em disfarces
+    # diferentes não mostram nada. Assim o gráfico compara blocos.
+    principais, blocos_vistos = [], set()
+    for _, linha in corr.iterrows():
+        if (linha["feature"] not in df.columns
+                or linha["bloco"] in blocos_vistos
+                or df[linha["feature"]].nunique(dropna=True) < 50):
+            continue
+        principais.append(linha["feature"])
+        blocos_vistos.add(linha["bloco"])
+        if len(principais) == 4:
+            break
     f5 = eda.fig_decis(df, principais)
 
     logger.info("6/7 mapa")

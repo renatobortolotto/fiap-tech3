@@ -285,7 +285,11 @@ def fig_decis(df: pd.DataFrame, features: list[str]) -> str:
     curvas em U revelam não linearidade, que só um modelo flexível captura.
     """
     aplicar_estilo()
-    features = [f for f in features if f in df.columns][:4]
+    # Variáveis de baixa cardinalidade (a taxa da UF tem 26 valores distintos) não
+    # admitem decis: os cortes caem em cima dos mesmos valores e a curva sai
+    # serrilhada por artefato, não por não linearidade.
+    features = [f for f in features
+                if f in df.columns and df[f].nunique(dropna=True) >= 50][:4]
     fig, eixos = plt.subplots(1, len(features), figsize=(3.4 * len(features), 4),
                               sharey=True)
     eixos = np.atleast_1d(eixos)
@@ -299,8 +303,9 @@ def fig_decis(df: pd.DataFrame, features: list[str]) -> str:
         ax.plot(perfil.index + 1, perfil.values, marker="o", color=cor)
         ax.set_xlabel("Decil")
         ax.set_xticks(range(1, 11, 3))
+        amplitude = f"{perfil.max() - perfil.min():.1f}".replace(".", ",")
         titular(ax, col.replace("_", " "),
-                f"amplitude {perfil.max() - perfil.min():.1f} p.p.".replace(".", ","))
+                f"{bloco_de(col)} · amplitude {amplitude} p.p.")
         limpar_eixos(ax)
     eixos[0].set_ylabel("% alfabetizados")
     fig.tight_layout()

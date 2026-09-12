@@ -66,3 +66,17 @@ def test_arquivos_referenciados_existem(padrao):
     referenciados = {m for m in re.findall(padrao, TEXTO)}
     ausentes = sorted(r for r in referenciados if not (RAIZ / r).exists())
     assert not ausentes, f"referenciados mas ausentes: {ausentes}"
+
+
+def test_referencias_cruzadas_do_readme_resolvem():
+    """Todo `§X.Y` citado no texto corresponde a uma seção ou subseção existente.
+
+    O README se apoia fortemente em referências internas — cada achado aponta para
+    onde a evidência está. Uma referência quebrada desfaz exatamente a cadeia de
+    argumento que ela deveria sustentar.
+    """
+    existentes = set(re.findall(r"^#{2,3} (\d+(?:\.\d+)?)[\. ]", TEXTO, flags=re.MULTILINE))
+    citadas = set(re.findall(r"§\s?(\d+(?:\.\d+)?)", TEXTO))
+    faltando = sorted(citadas - existentes,
+                      key=lambda x: [int(p) for p in x.split(".")])
+    assert not faltando, f"referências a seções inexistentes: {faltando}"

@@ -122,6 +122,13 @@ def fig_metricas_por_estrato(por_estrato: pd.DataFrame, nome: str) -> str:
 # =============================================================================
 # Interpretabilidade
 # =============================================================================
+ROTULO_EIXO_IMPORTANCIA = {
+    "importancia": "Ganho acumulado nas divisões das árvores (unidade arbitrária)",
+    "queda_auc": "Queda de ROC AUC ao embaralhar a coluna no conjunto de teste",
+    "shap_medio_abs": "Valor SHAP médio absoluto",
+}
+
+
 def fig_importancia(imp: pd.DataFrame, coluna: str, titulo: str,
                     subtitulo: str, nome: str, n: int = 20) -> str:
     """Barras horizontais de importância, com o bloco temático como rótulo direto."""
@@ -134,6 +141,7 @@ def fig_importancia(imp: pd.DataFrame, coluna: str, titulo: str,
                     xytext=(5, 0), textcoords="offset points", va="center",
                     fontsize=8, color=TINTA_SECUNDARIA)
     ax.set_xlim(0, topo[coluna].max() * 1.55)
+    ax.set_xlabel(ROTULO_EIXO_IMPORTANCIA.get(coluna, coluna.replace("_", " ")))
     titular(ax, titulo, subtitulo)
     limpar_eixos(ax)
     fig.tight_layout()
