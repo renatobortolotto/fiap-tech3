@@ -93,6 +93,17 @@ def aplicar_estilo() -> None:
     })
 
 
+def num(valor: float, casas: int = 1, sinal: bool = False) -> str:
+    """Formata um número no padrão brasileiro (vírgula decimal).
+
+    Existe porque a forma ingênua — `f"{x:.1f} p.p.".replace(".", ",")` — também
+    troca os pontos da abreviatura, produzindo "10,6 p,p,". O erro apareceu três
+    vezes em gráficos diferentes antes de virar esta função.
+    """
+    formato = f"{{:+.{casas}f}}" if sinal else f"{{:.{casas}f}}"
+    return formato.format(valor).replace(".", ",")
+
+
 def limpar_eixos(ax, manter=("left", "bottom")) -> None:
     """Remove as bordas supérfluas: a grade já dá a referência de leitura."""
     for lado, spine in ax.spines.items():

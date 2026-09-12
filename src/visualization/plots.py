@@ -12,6 +12,7 @@ from sklearn.metrics import precision_recall_curve, roc_curve
 
 from .estilo import (
     CATEGORICA,
+    num,
     SUPERFICIE,
     DIVERGENTE,
     STATUS,
@@ -235,9 +236,9 @@ def fig_calibracao_municipal(ranking: pd.DataFrame, metricas: dict,
     ax.set_ylabel("Taxa municipal observada (%)")
     ax.set_xlim(10, 100)
     ax.set_ylim(0, 100)
-    r = f"{metricas['correlacao']:.3f}".replace(".", ",")
-    mae = f"{metricas['erro_medio_absoluto_pp']:.1f}".replace(".", ",")
-    vies = f"{metricas['vies_pp']:+.1f}".replace(".", ",")
+    r = num(metricas["correlacao"], 3)
+    mae = num(metricas["erro_medio_absoluto_pp"])
+    vies = num(metricas["vies_pp"], sinal=True)
     n = f"{metricas['n_municipios']:,}".replace(",", ".")
     titular(ax, "A previsão agregada por município ordena bem, com margem larga",
             f"r = {r} · erro absoluto médio {mae} p.p. · viés {vies} p.p. · "
@@ -273,11 +274,16 @@ def fig_residuos(ranking: pd.DataFrame, n: int = 12, coluna: str = "residuo_ajus
     fig, ax = plt.subplots(figsize=(9.5, 0.38 * len(dados) + 2))
     ax.barh(rotulos, dados[coluna] * 100, color=cores, height=0.6)
     ax.axvline(0, color=TINTA_SECUNDARIA, lw=1)
-    for y, r in enumerate(dados[coluna] * 100):
-        ax.annotate(f"{r:+.1f} p.p.".replace(".", ","), (r, y),
+    valores = dados[coluna] * 100
+    for y, r in enumerate(valores):
+        # Só a parte numérica leva vírgula decimal — "p.p." é abreviatura, não número.
+        ax.annotate(f"{num(r, sinal=True)} p.p.", (r, y),
                     xytext=(5 if r > 0 else -5, 0), textcoords="offset points",
                     va="center", ha="left" if r > 0 else "right",
                     fontsize=8, color=TINTA_SECUNDARIA)
+    # Folga nas duas pontas para o rótulo mais longo não invadir o eixo.
+    limite = abs(valores).max()
+    ax.set_xlim(-limite * 1.32, limite * 1.32)
     ax.set_xlabel("Resíduo ajustado pela UF (pontos percentuais)")
     titular(ax, "Quem foge dos próprios pares estaduais",
             "observado menos previsto, descontada a mediana do resíduo da UF\n"

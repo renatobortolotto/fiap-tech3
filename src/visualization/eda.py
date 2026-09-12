@@ -27,6 +27,7 @@ from ..common.log import get_logger
 from ..preprocessing.features import ALVO, bloco_de
 from .estilo import (
     CATEGORICA,
+    num,
     SUPERFICIE,
     GRADE,
     SEQUENCIAL,
@@ -99,8 +100,7 @@ def fig_distribuicao_alvo(df: pd.DataFrame) -> str:
                   color=CATEGORICA[2], height=0.52)
     rotular_barras(eixos[2], "{:.1f}%", horizontal=True)
     amplitude = por_regiao.max() - por_regiao.min()
-    titular(eixos[2], "Por região",
-            f"{amplitude:.1f} p.p. separam Norte e Sul".replace(".", ","))
+    titular(eixos[2], "Por região", f"{num(amplitude)} p.p. separam Norte e Sul")
     eixos[2].set_xlim(0, 100)
 
     for ax in eixos:
@@ -161,7 +161,7 @@ def fig_dispersao_unidades(df: pd.DataFrame) -> str:
     # Coordenada mista: x nos dados, y na fração do eixo — assim o rótulo fica
     # ancorado à linha sem depender do número de faixas desenhadas.
     from matplotlib.transforms import blended_transform_factory
-    ax.text(media, 1.005, f"média nacional {media:.1f}%".replace(".", ","),
+    ax.text(media, 1.005, f"média nacional {num(media)}%",
             transform=blended_transform_factory(ax.transData, ax.transAxes),
             fontsize=8.5, color=TINTA_SECUNDARIA, ha="center", va="bottom")
     ax.set_xlabel("Taxa de alfabetização da unidade (%)")
@@ -303,9 +303,8 @@ def fig_decis(df: pd.DataFrame, features: list[str]) -> str:
         ax.plot(perfil.index + 1, perfil.values, marker="o", color=cor)
         ax.set_xlabel("Decil")
         ax.set_xticks(range(1, 11, 3))
-        amplitude = f"{perfil.max() - perfil.min():.1f}".replace(".", ",")
         titular(ax, col.replace("_", " "),
-                f"{bloco_de(col)} · amplitude {amplitude} p.p.")
+                f"{bloco_de(col)} · amplitude {num(perfil.max() - perfil.min())} p.p.")
         limpar_eixos(ax)
     eixos[0].set_ylabel("% alfabetizados")
     fig.tight_layout()
