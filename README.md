@@ -341,8 +341,12 @@ estado que nunca viu.** De 0,657 para 0,568, sendo 0,500 o acaso puro: a margem 
 A leitura honesta disso é que boa parte da habilidade aparente do modelo é
 **conhecimento de municípios específicos**, aprendido pelo *target encoding* de
 `id_municipio` sobre os dados de 2023 — uma defasagem legítima, mas que não se
-transfere para territórios ausentes do treino. O que generaliza de verdade para um
-estado novo é o bloco socioeconômico e demográfico, e ele sozinho explica bem menos.
+transfere para territórios ausentes do treino.
+
+Note-se, porém, que o problema **não é a ausência da identidade em si**: num município
+novo dentro de um estado conhecido, o modelo se reorganiza sobre o IDEB defasado e o
+contexto regional e chega a AUC 0,645 (§8.9). O que falta num **estado** novo é a
+calibração regional inteira.
 
 Nenhum relatório que reportasse apenas "AUC 0,637" permitiria essa conclusão. Foi
 preciso estratificar, e foi preciso descobrir antes que AC, DF e SP entram só em 2024.
@@ -649,6 +653,39 @@ não há estrutura fina a descobrir num sinal único — e por que o modelo **de
 estados novos** (§8.2), onde esse sinal precisa ser inferido de contexto sob um regime
 regional diferente.
 
+### 8.9 O que o modelo faz quando não pode consultar a tabela
+
+O Modelo B oferece o teste natural dessa hipótese: seu conjunto de teste é formado por
+**municípios que o treino nunca viu**, dentro de estados conhecidos. Ali, o *target
+encoding* de `id_municipio` não tem a que recorrer — cai na média global.
+
+O resultado é esclarecedor. `id_municipio` **desaparece do topo**, e o modelo se
+reorganiza sobre outras variáveis:
+
+| variável (Modelo B) | queda de ROC AUC ao embaralhar |
+|---|---:|
+| `edu_ideb_ai_rede_do_aluno` (IDEB defasado da rede) | **0,0245** |
+| `mun_lag_media_portugues` (histórico municipal) | 0,0083 |
+| `sigla_uf` | 0,0080 |
+| `ter_mesorregiao` | 0,0072 |
+| `inse_medio_uf` (INSE médio do estado) | 0,0047 |
+
+E o desempenho quase não cai: **AUC 0,645** contra 0,657 do Modelo A em municípios
+conhecidos.
+
+O gráfico SHAP do Modelo B mostra isso de forma literal: `id_municipio` aparece como um
+**aglomerado único e compacto** perto de zero — todos os municípios não vistos
+receberam o mesmo valor codificado (a média global) e, portanto, a mesma contribuição
+quase nula. É o recuo do *target encoding* visível a olho nu.
+
+![SHAP do Modelo B](images/14_shap_espacial.png)
+
+**A conclusão fica mais precisa do que "é uma tabela consultável".** O modelo tem duas
+vias para o mesmo sinal: a identidade do município, quando disponível, e o **contexto
+regional mais indicadores defasados**, quando não. As duas funcionam. O que ele não
+consegue é operar quando *nenhuma* das duas está calibrada — o caso de um estado
+inteiramente novo, onde a AUC cai para 0,568.
+
 ![ablação por bloco](images/13_ablacao_por_bloco.png)
 
 > **Nota metodológica.** A ablação foi rodada sobre uma subamostra de 400 mil alunos de
@@ -663,9 +700,11 @@ regional diferente.
 consequente, e está medida: a AUC cai de 0,657 em municípios conhecidos para 0,568 em
 estados novos (§7.1), e a importância por permutação mostra que `id_municipio` sozinho
 vale vinte e quatro vezes mais que todas as 21 variáveis socioeconômicas somadas
-(§8.8). Na prática, **o modelo é em boa medida uma tabela consultável da taxa municipal
-de 2023**, e não um mecanismo que explique alfabetização. Isso o torna útil onde há
-histórico e fraco onde não há — que é justamente onde um gestor mais precisaria dele.
+(§8.8). Em municípios novos dentro de estados conhecidos ele se sai bem (AUC 0,645,
+§8.9), apoiando-se no IDEB defasado e no contexto regional; o que ele não consegue é
+operar num **estado inteiro** que nunca viu. Isso o torna útil onde a série histórica
+regional existe, e fraco onde não existe — que é justamente onde um gestor mais
+precisaria dele.
 
 **As features de escola são, na verdade, features de município.** O identificador de
 escola é anônimo e renumerado anualmente (§3). Toda a variação *entre escolas de um
