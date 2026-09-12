@@ -37,6 +37,7 @@ def fig_curvas(y, probabilidades: dict[str, np.ndarray], nome: str) -> str:
     fig, eixos = plt.subplots(1, 3, figsize=(14, 4.6))
     y = np.asarray(y).astype(int)
 
+    limites_calibracao = [1.0, 0.0]
     for i, (modelo, p) in enumerate(probabilidades.items()):
         cor = CATEGORICA[i % len(CATEGORICA)]
         fpr, tpr, _ = roc_curve(y, p)
@@ -45,6 +46,8 @@ def fig_curvas(y, probabilidades: dict[str, np.ndarray], nome: str) -> str:
         eixos[1].plot(rev, prec, color=cor, label=modelo)
         obs, prev = calibration_curve(y, p, n_bins=20, strategy="quantile")
         eixos[2].plot(prev, obs, marker="o", ms=4, color=cor, label=modelo)
+        limites_calibracao[0] = min(limites_calibracao[0], prev.min(), obs.min())
+        limites_calibracao[1] = max(limites_calibracao[1], prev.max(), obs.max())
 
     eixos[0].plot([0, 1], [0, 1], ls="--", color=TINTA_SUAVE, lw=1.2)
     eixos[0].set_xlabel("Falsos positivos")
@@ -57,9 +60,17 @@ def fig_curvas(y, probabilidades: dict[str, np.ndarray], nome: str) -> str:
     titular(eixos[1], "Precisão x revocação", f"linha de base = taxa positiva ({y.mean():.1%})")
 
     eixos[2].plot([0, 1], [0, 1], ls="--", color=TINTA_SUAVE, lw=1.2)
+    # Com o eixo em 0-1 o desvio é invisível: todas as probabilidades vivem numa
+    # faixa estreita em torno da taxa-base. A janela é ajustada aos dados, com folga.
+    folga = 0.04
+    eixos[2].set_xlim(limites_calibracao[0] - folga, limites_calibracao[1] + folga)
+    eixos[2].set_ylim(limites_calibracao[0] - folga, limites_calibracao[1] + folga)
+    eixos[2].set_aspect("equal", adjustable="box")
     eixos[2].set_xlabel("Probabilidade prevista")
     eixos[2].set_ylabel("Frequência observada")
-    titular(eixos[2], "Calibração", "sobre a diagonal = probabilidade confiável")
+    titular(eixos[2], "Calibração",
+            "sobre a diagonal = probabilidade confiável · eixo ajustado à faixa "
+            "efetiva das previsões")
 
     for ax in eixos:
         ax.legend(loc="lower right" if ax is not eixos[1] else "upper right")

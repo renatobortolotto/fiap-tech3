@@ -11,7 +11,6 @@ import argparse
 import sys
 
 import joblib
-import numpy as np
 import pandas as pd
 
 from ..common.config import MODELS_DIR, REPORTS_DIR

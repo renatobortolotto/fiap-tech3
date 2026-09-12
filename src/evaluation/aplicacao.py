@@ -161,7 +161,7 @@ def agrupar_municipios(
 def risco_de_nao_atingir_meta(
     ranking: pd.DataFrame,
     metas: pd.DataFrame,
-    coluna_meta: str = "mun_meta_ano_alvo",
+    coluna_meta: str = "mun_lag_meta_ano_alvo",
 ) -> pd.DataFrame:
     """Probabilidade de o município ficar abaixo da meta pactuada.
 

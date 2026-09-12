@@ -8,8 +8,6 @@ from __future__ import annotations
 
 import sys
 
-import pandas as pd
-
 from ..common.config import REPORTS_DIR
 from ..common.log import get_logger
 from ..modeling.dataset import carregar_abt

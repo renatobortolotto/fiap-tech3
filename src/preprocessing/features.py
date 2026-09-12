@@ -5,14 +5,21 @@ Isso mantém a engenharia de atributos legível e torna trivial ligar/desligar b
 inteiros nos experimentos de ablação.
 
     alu_*    atributos do próprio aluno (poucos: a base de microdados é enxuta)
-    inf_*    infraestrutura e porte da escola (Censo Escolar)
-    inse_*   nível socioeconômico da escola (INSE/INEP)
-    edu_*    indicadores educacionais da escola/município (INEP)
+    inf_*    infraestrutura e porte da rede escolar (Censo Escolar)
+    inse_*   nível socioeconômico das escolas (INSE/INEP)
+    edu_*    indicadores educacionais, IDEB e SAEB (INEP)
     mun_*    contexto do município — `mun_lag_*` exige defasagem temporal
-    ses_*    socioeconômico do município (IBGE, IPEA)
+    ses_*    socioeconômico do município (IBGE, IPEA, CadÚnico, Bolsa Família)
     fin_*    financiamento educacional do município (FNDE/FUNDEB, SICONFI)
     ter_*    território (região, coordenadas, capital, Amazônia Legal)
     uf_*     contexto da unidade da federação — `uf_lag_*` exige defasagem
+
+ATENÇÃO aos blocos `inf_` e `inse_`: apesar do nome, eles NÃO descrevem a escola do
+aluno. As fontes originais têm grão escolar, mas o `id_escola` dos microdados de
+alfabetização é anônimo e renumerado a cada ano (docs §6), o que torna o join escolar
+impossível. Tudo foi agregado a (ano, município, rede), ponderado pelas matrículas.
+São, portanto, features da REDE do município — e a variação entre escolas de um mesmo
+município fica fora do modelo.
 """
 from __future__ import annotations
 
@@ -84,12 +91,25 @@ _MAPA_BLOCOS = {
 
 
 def bloco_de(coluna: str) -> str:
-    """Bloco temático de uma coluna, a partir do prefixo."""
+    """Bloco temático de uma coluna, a partir do prefixo.
+
+    Também resolve os nomes criados pelo pré-processamento, para que os gráficos de
+    importância fiquem legíveis:
+
+    * `missingindicator_<col>` — a coluna binária "estava faltando", gerada pelo
+      `SimpleImputer(add_indicator=True)`. Herda o bloco da coluna de origem, com a
+      marca "(ausência)" — a importância de um indicador desses é um achado por si só.
+    * `<col>_<categoria>` — saída do one-hot; o prefixo original ainda resolve.
+    """
+    if coluna.startswith("missingindicator_"):
+        origem = coluna[len("missingindicator_"):]
+        return f"{bloco_de(origem)} (ausência)"
     for prefixo, bloco in _MAPA_BLOCOS.items():
         if coluna.startswith(prefixo):
             return bloco
-    if coluna in CATEGORICAS_ALTA_CARDINALIDADE:
-        return "identificação geográfica"
+    for chave in CATEGORICAS_ALTA_CARDINALIDADE:
+        if coluna == chave or coluna.startswith(chave + "_"):
+            return "identificação geográfica"
     return "outros"
 
 

@@ -12,7 +12,7 @@ PROJECT := fiap-data-engineering
 
 .DEFAULT_GOAL := help
 .PHONY: help setup auth features features-dry dados eda modelo-a modelo-b \
-        tunar interpretar aplicacao notebooks testes tudo limpar
+        figuras tunar interpretar aplicacao notebooks testes tudo limpar
 
 help: ## Mostra esta ajuda (alvo padrão)
 	@echo "Alvos disponíveis:"
@@ -55,6 +55,10 @@ modelo-b: ## Modelo B — operacional (2024, com histórico, partição por muni
 tunar: ## Otimização de hiperparâmetros com Optuna
 	$(PYTHON) -m src.modeling.tune
 
+figuras: ## Regenera as figuras de avaliação a partir dos artefatos salvos
+	$(PYTHON) -m src.evaluation.executar_figuras --desenho temporal
+	$(PYTHON) -m src.evaluation.executar_figuras --desenho espacial
+
 interpretar: ## Importâncias, SHAP e ablação por bloco -> images/ e reports/
 	$(PYTHON) -m src.evaluation.executar_interpretacao
 
@@ -67,7 +71,7 @@ notebooks: ## Regenera os notebooks a partir dos módulos de src/
 testes: ## Testes automatizados (antivazamento e integridade da pipeline)
 	$(PYTHON) -m pytest tests/ -v
 
-tudo: features dados eda modelo-a modelo-b interpretar aplicacao ## Pipeline completa
+tudo: features dados eda modelo-a modelo-b figuras interpretar aplicacao ## Pipeline completa
 
 limpar: ## Remove artefatos locais (dados e modelos são reproduzíveis)
 	rm -rf data/raw/* data/interim/* data/processed/* models/*.joblib

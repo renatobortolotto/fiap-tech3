@@ -100,21 +100,24 @@ def limpar_eixos(ax, manter=("left", "bottom")) -> None:
 
 
 def rotular_barras(ax, formato="{:.0f}", deslocamento=3, horizontal=False) -> None:
-    """Rótulo direto no fim de cada barra.
+    """Rótulo direto no fim de cada barra, com vírgula decimal (pt-BR).
 
     Obrigatório nos gráficos que usam os slots de menor contraste: a identidade
     do dado não pode depender só da cor.
     """
+    def _fmt(v):
+        return formato.format(v).replace(".", ",")
+
     for barra in ax.patches:
         if horizontal:
             valor = barra.get_width()
-            ax.annotate(formato.format(valor),
+            ax.annotate(_fmt(valor),
                         (valor, barra.get_y() + barra.get_height() / 2),
                         xytext=(deslocamento, 0), textcoords="offset points",
                         va="center", ha="left", fontsize=8, color=TINTA_SECUNDARIA)
         else:
             valor = barra.get_height()
-            ax.annotate(formato.format(valor),
+            ax.annotate(_fmt(valor),
                         (barra.get_x() + barra.get_width() / 2, valor),
                         xytext=(0, deslocamento), textcoords="offset points",
                         ha="center", va="bottom", fontsize=8, color=TINTA_SECUNDARIA)

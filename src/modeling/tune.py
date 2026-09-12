@@ -31,11 +31,11 @@ import optuna
 from lightgbm import LGBMClassifier
 from sklearn.model_selection import cross_val_score
 
-from ..common.config import MODELS_DIR, N_FOLDS, RANDOM_STATE, REPORTS_DIR
+from ..common.config import RANDOM_STATE, REPORTS_DIR
 from ..common.log import get_logger
 from ..preprocessing.features import ALVO, descartar_degeneradas, selecionar_features
 from ..preprocessing.pipeline import montar_modelo
-from .dataset import carregar_abt, cv_agrupada, split_espacial, split_temporal
+from .dataset import carregar_abt, cv_agrupada
 from .train import DESENHOS, amostrar
 
 logger = get_logger("modeling.tune")

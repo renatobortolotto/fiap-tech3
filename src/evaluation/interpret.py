@@ -31,7 +31,7 @@ from sklearn.metrics import roc_auc_score
 
 from ..common.config import RANDOM_STATE
 from ..common.log import get_logger
-from ..preprocessing.features import ALVO, bloco_de, selecionar_features
+from ..preprocessing.features import ALVO, bloco_de
 from ..preprocessing.pipeline import montar_modelo
 
 logger = get_logger("evaluation.interpret")
@@ -60,16 +60,16 @@ def importancia_permutacao(
     pipeline,
     X_teste: pd.DataFrame,
     y_teste,
-    n_repeticoes: int = 5,
-    max_amostra: int = 150_000,
+    n_repeticoes: int = 3,
+    max_amostra: int = 100_000,
     random_state: int = RANDOM_STATE,
 ) -> pd.DataFrame:
     """Queda de ROC AUC ao embaralhar cada coluna do conjunto de teste.
 
-    Subamostra o teste: com 1,85 milhão de linhas e ~120 colunas, uma passada
-    completa exigiria ~600 reajustes de predição sobre a base inteira. Em 150 mil
-    linhas o erro-padrão da AUC já é da ordem de 0,001 — muito menor que as
-    diferenças que se quer ordenar.
+    Subamostra o teste porque o custo é multiplicativo: 126 colunas x 3 repetições
+    são 378 predições completas. Sobre 1,85 milhão de linhas isso levaria horas; em
+    100 mil o erro-padrão da AUC é da ordem de 0,0015 — uma ordem de grandeza menor
+    que as diferenças que se quer ordenar, e o ranking é o que importa aqui.
     """
     rng = np.random.default_rng(random_state)
     if len(X_teste) > max_amostra:

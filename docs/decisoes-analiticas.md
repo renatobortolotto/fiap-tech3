@@ -29,9 +29,12 @@ risco de não se alfabetizar* — só faz sentido entre as crianças efetivament
 aproximadamente balanceado — não é necessário reamostrar nem reponderar classes.
 
 > **Ressalva registrada.** A ausência à prova é, ela própria, um sinal de risco
-> educacional relevante. Ela não é ignorada no projeto: entra como *contexto agregado*
-> (taxa de ausência do município em t-1), nunca como atributo do próprio aluno que está
-> sendo classificado.
+> educacional relevante — e varia muito entre estados, de 1,9% no Ceará a 29,9% em
+> Santa Catarina em 2024. Ela não é ignorada: entra como *contexto agregado* pela
+> coluna `mun_lag_pct_participacao` (participação do município na avaliação do ano
+> anterior; média de 86,8%, mínimo de 70%), que correlaciona 0,158 com o alvo. Nunca
+> entra como atributo do próprio aluno que está sendo classificado — isso seria o
+> vazamento descrito acima.
 
 ---
 
@@ -105,10 +108,10 @@ alunos da mesma escola. O que não existe é a ponte entre os anos.
 
 **Restrição descoberta nos dados.** A cobertura das features defasadas é assimétrica:
 
-| Ano dos alunos | alunos | contexto municipal t-1 | contexto escolar t-1 | meta pactuada | território |
+| Ano dos alunos | alunos | contexto municipal t-1 | meta pactuada | contexto externo | território |
 |---|---:|---:|---:|---:|---:|
-| 2023 | 1.502.809 | **0 %** | **0 %** | 0 % | 100 % |
-| 2024 | 1.851.852 | 76,9 % | 79,0 % | 74,2 % | 100 % |
+| 2023 | 1.502.809 | **0 %** | **0 %** | 96,9 – 100 % | 100 % |
+| 2024 | 1.851.852 | 76,9 % | 74,2 % | 99,7 – 100 % | 100 % |
 
 Não existe 2022 na base: nenhum aluno de 2023 pode ter histórico. Um único modelo com
 histórico defasado descartaria 45 % dos dados e ficaria sem validação temporal.
@@ -124,8 +127,11 @@ histórico defasado descartaria 45 % dos dados e ficaria sem validação tempora
   nunca vistos. Responde *"qual o teto de acerto quando o gestor tem o histórico em
   mãos?"*.
 
-A diferença entre A e B quantifica exatamente **quanto vale ter memória histórica** na
-predição — um resultado de interesse direto para política pública.
+**Cuidado ao comparar A e B.** Os dois têm conjuntos de teste diferentes, então a
+diferença bruta entre suas AUCs não mede "quanto vale ter histórico". A medida limpa
+dessa pergunta é a **ablação por bloco dentro do desenho B**, que remove o bloco
+`mun_lag_*` mantendo o mesmo treino e o mesmo teste — reportada em
+`reports/ablacao_espacial.csv`.
 
 **O teste out-of-time não é só "um ano depois" — a geografia muda.** Três unidades da
 federação aparecem apenas em 2024: **AC, DF e SP**. São 676 municípios novos e
@@ -133,16 +139,26 @@ federação aparecem apenas em 2024: **AC, DF e SP**. São 676 municípios novos
 São Paulo sozinho responde por 395.444 desses alunos — o maior estado do país entra
 na base exatamente no ano de teste.
 
+Há também deriva real de nível nas UFs presentes nos dois anos: o Rio Grande do Sul
+cai 18,9 p.p. (64,7% → 45,8%) e Minas Gerais sobe 11,7 p.p. (60,9% → 72,6%).
+
 **Roraima não existe na base**, em nenhum dos dois anos. A cobertura é de 26 das 27
-unidades da federação e de 5.547 dos 5.570 municípios brasileiros. Há
-também deriva real de nível nas UFs presentes nos dois anos: o Rio Grande do Sul cai
-18,9 p.p. (64,7% -> 45,8%) e Minas Gerais sobe 11,7 p.p. (60,9% -> 72,6%).
+unidades da federação e de 5.547 dos 5.570 municípios brasileiros.
 
 Consequência para a avaliação: a métrica do teste de 2024 mistura duas coisas
 diferentes — *generalização temporal* (UFs já vistas, um ano depois) e *extrapolação
 geográfica* (UFs nunca vistas). Por isso as métricas são reportadas **estratificadas**
 nos dois grupos, além do total. Um número único aqui esconderia qual das duas
-capacidades o modelo realmente tem.
+capacidades o modelo realmente tem — e a diferença medida é grande:
+
+| estrato | alunos | ROC AUC |
+|---|---:|---:|
+| município já visto em 2023 | 1.423.733 | **0,657** |
+| UF nova (AC, DF, SP) | 427.789 | **0,568** |
+| total | 1.851.852 | 0,637 |
+
+Sobre um acaso de 0,500, a margem cai de 0,157 para 0,068: o modelo perde cerca de dois
+terços da vantagem ao encarar um estado que nunca viu.
 
 **Os 23 % de alunos de 2024 sem histórico municipal** não são descartados: são municípios
 que entraram na avaliação em 2024. Recebem imputação explícita mais um indicador binário

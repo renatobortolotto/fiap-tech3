@@ -23,12 +23,11 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-from ..common.config import IMAGES_DIR, REPORTS_DIR
 from ..common.log import get_logger
-from ..preprocessing.features import ALVO, bloco_de, selecionar_features
+from ..preprocessing.features import ALVO, bloco_de
 from .estilo import (
     CATEGORICA,
-    DIVERGENTE,
+    SUPERFICIE,
     GRADE,
     SEQUENCIAL,
     TINTA_SECUNDARIA,
@@ -82,7 +81,7 @@ def fig_distribuicao_alvo(df: pd.DataFrame) -> str:
 
     por_ano = df.groupby("ano")[ALVO].mean().mul(100)
     eixos[0].bar(por_ano.index.astype(str), por_ano.values,
-                 color=CATEGORICA[0], width=0.55)
+                 color=CATEGORICA[0], width=0.38)
     rotular_barras(eixos[0], "{:.1f}%")
     titular(eixos[0], "Por ano", "% de alunos avaliados alfabetizados")
     eixos[0].set_ylim(0, 100)
@@ -90,16 +89,18 @@ def fig_distribuicao_alvo(df: pd.DataFrame) -> str:
     por_rede = (df.groupby("alu_rede")[ALVO].agg(["mean", "size"])
                   .query("size >= 1000").sort_values("mean"))
     eixos[1].barh(por_rede.index, por_rede["mean"].mul(100),
-                  color=CATEGORICA[1], height=0.55)
+                  color=CATEGORICA[1], height=0.38)
     rotular_barras(eixos[1], "{:.1f}%", horizontal=True)
     titular(eixos[1], "Por rede", "redes com ao menos 1.000 alunos")
     eixos[1].set_xlim(0, 100)
 
     por_regiao = df.groupby("ter_regiao")[ALVO].mean().mul(100).sort_values()
     eixos[2].barh(por_regiao.index, por_regiao.values,
-                  color=CATEGORICA[2], height=0.6)
+                  color=CATEGORICA[2], height=0.52)
     rotular_barras(eixos[2], "{:.1f}%", horizontal=True)
-    titular(eixos[2], "Por região", "desigualdade regional é a maior fonte de variação")
+    amplitude = por_regiao.max() - por_regiao.min()
+    titular(eixos[2], "Por região",
+            f"{amplitude:.1f} p.p. separam Norte e Sul".replace(".", ","))
     eixos[2].set_xlim(0, 100)
 
     for ax in eixos:
@@ -109,31 +110,66 @@ def fig_distribuicao_alvo(df: pd.DataFrame) -> str:
 
 
 def fig_dispersao_unidades(df: pd.DataFrame) -> str:
-    """Dispersão da taxa entre escolas e entre municípios, lado a lado."""
+    """Amplitude da taxa entre escolas e entre municípios, por ano.
+
+    Histogramas sobrepostos foram descartados: as duas distribuições se recobrem
+    quase inteiramente e a mistura das cores não responde à pergunta. O que se quer
+    saber é **quanto as unidades diferem entre si** — e isso se lê melhor como
+    amplitude: a barra vai do percentil 10 ao 90, com a mediana marcada.
+    """
     aplicar_estilo()
-    fig, ax = plt.subplots(figsize=(9, 4.6))
 
-    escolas = (df.groupby(["ano", "id_escola"], observed=True)[ALVO]
-                 .agg(["mean", "size"]).query("size >= 20")["mean"].mul(100))
-    municipios = (df.groupby(["ano", "id_municipio"], observed=True)[ALVO]
-                    .agg(["mean", "size"]).query("size >= 30")["mean"].mul(100))
+    def resumo(chave: str, minimo: int, ano: int):
+        taxas = (df[df["ano"] == ano]
+                 .groupby(chave, observed=True)[ALVO]
+                 .agg(["mean", "size"]).query("size >= @minimo")["mean"].mul(100))
+        return {"p10": taxas.quantile(0.10), "p25": taxas.quantile(0.25),
+                "p50": taxas.median(), "p75": taxas.quantile(0.75),
+                "p90": taxas.quantile(0.90), "n": len(taxas)}
 
-    bins = np.linspace(0, 100, 41)
-    ax.hist(escolas, bins=bins, density=True, color=CATEGORICA[0], alpha=0.55,
-            label=f"Escolas (n = {len(escolas):,})".replace(",", "."))
-    ax.hist(municipios, bins=bins, density=True, color=CATEGORICA[1], alpha=0.55,
-            label=f"Municípios (n = {len(municipios):,})".replace(",", "."))
-    ax.axvline(df[ALVO].mean() * 100, color=TINTA_SECUNDARIA, ls="--", lw=1.5)
-    ax.annotate(f"média nacional {df[ALVO].mean()*100:.1f}%",
-                (df[ALVO].mean() * 100, ax.get_ylim()[1] * 0.92),
-                xytext=(6, 0), textcoords="offset points",
-                fontsize=9, color=TINTA_SECUNDARIA)
+    linhas = []
+    for ano in sorted(df["ano"].unique()):
+        linhas.append(("Municípios", ano, CATEGORICA[1], resumo("id_municipio", 30, ano)))
+        linhas.append(('"Escolas"', ano, CATEGORICA[0], resumo("id_escola", 20, ano)))
+
+    fig, ax = plt.subplots(figsize=(10, 3.9))
+    posicoes = range(len(linhas))
+    rotulos = []
+    for y, (unidade, ano, cor, r) in zip(posicoes, linhas):
+        ax.hlines(y, r["p10"], r["p90"], color=cor, lw=3, alpha=0.45)
+        ax.hlines(y, r["p25"], r["p75"], color=cor, lw=9, alpha=0.9)
+        ax.plot(r["p50"], y, "o", color=SUPERFICIE, ms=9, zorder=3)
+        ax.plot(r["p50"], y, "o", color=cor, ms=5, zorder=4)
+        ax.annotate(f'{r["p10"]:.0f}', (r["p10"], y), xytext=(-8, 0),
+                    textcoords="offset points", ha="right", va="center",
+                    fontsize=8.5, color=TINTA_SECUNDARIA)
+        ax.annotate(f'{r["p90"]:.0f}', (r["p90"], y), xytext=(8, 0),
+                    textcoords="offset points", ha="left", va="center",
+                    fontsize=8.5, color=TINTA_SECUNDARIA)
+        ax.annotate(f'amplitude {r["p90"] - r["p10"]:.0f} p.p.',
+                    (r["p90"], y), xytext=(34, 0), textcoords="offset points",
+                    ha="left", va="center", fontsize=8.5, color=cor)
+        rotulos.append(f'{unidade} · {ano}\n(n = {r["n"]:,})'.replace(",", "."))
+
+    ax.set_yticks(list(posicoes))
+    ax.set_yticklabels(rotulos, fontsize=9)
+    ax.invert_yaxis()
+    ax.set_xlim(0, 118)
+    ax.set_xticks([0, 20, 40, 60, 80, 100])
+    media = df[ALVO].mean() * 100
+    ax.axvline(media, color=TINTA_SECUNDARIA, ls="--", lw=1.2)
+    # Coordenada mista: x nos dados, y na fração do eixo — assim o rótulo fica
+    # ancorado à linha sem depender do número de faixas desenhadas.
+    from matplotlib.transforms import blended_transform_factory
+    ax.text(media, 1.005, f"média nacional {media:.1f}%".replace(".", ","),
+            transform=blended_transform_factory(ax.transData, ax.transAxes),
+            fontsize=8.5, color=TINTA_SECUNDARIA, ha="center", va="bottom")
     ax.set_xlabel("Taxa de alfabetização da unidade (%)")
-    ax.set_ylabel("Densidade")
-    ax.legend(loc="upper left")
-    titular(ax, "A variação entre escolas é maior — mas quase toda transitória",
-            "distribuição das taxas observadas; escolas com ≥20 e municípios com ≥30 alunos")
-    limpar_eixos(ax)
+    ax.grid(axis="y", visible=False)
+    titular(ax, "Quanto as unidades diferem entre si",
+            "barra grossa = quartis; barra fina = do percentil 10 ao 90; "
+            'ponto = mediana. "Escolas" entre aspas: a chave é anônima')
+    limpar_eixos(ax, manter=("bottom",))
     fig.tight_layout()
     return salvar(fig, "02_dispersao_escolas_municipios")
 
@@ -157,23 +193,33 @@ def fig_persistencia(df: pd.DataFrame) -> tuple[str, dict]:
     r_esc = stats.pearsonr(escolas[2023], escolas[2024])[0]
     r_mun = stats.pearsonr(municipios[2023], municipios[2024])[0]
 
-    fig, eixos = plt.subplots(1, 2, figsize=(11, 5), sharex=True, sharey=True)
-    for ax, dados, r, titulo, cor, n in [
-        (eixos[0], escolas, r_esc, "Escola", CATEGORICA[0], len(escolas)),
-        (eixos[1], municipios, r_mun, "Município", CATEGORICA[1], len(municipios)),
-    ]:
+    fig, eixos = plt.subplots(1, 2, figsize=(11.5, 5.2), sharex=True, sharey=True)
+    painéis = [
+        (eixos[0], escolas, r_esc, CATEGORICA[0], len(escolas),
+         'Mesmo "id_escola"',
+         "chave renumerada a cada ano: só 2,4% são da mesma escola"),
+        (eixos[1], municipios, r_mun, CATEGORICA[1], len(municipios),
+         "Mesmo município",
+         "chave IBGE estável — a persistência aqui é real"),
+    ]
+    for ax, dados, r, cor, n, titulo, nota in painéis:
         ax.scatter(dados[2023] * 100, dados[2024] * 100, s=6, alpha=0.18,
                    color=cor, edgecolors="none")
         ax.plot([0, 100], [0, 100], color=TINTA_SECUNDARIA, ls="--", lw=1.2)
         ax.set_xlabel("Taxa em 2023 (%)")
         titular(ax, f"{titulo} — r = {r:.2f}".replace(".", ","),
-                f"n = {n:,}".replace(",", ".") + " unidades presentes nos dois anos")
+                f"n = {n:,}".replace(",", ".") + f" · {nota}")
         limpar_eixos(ax)
     eixos[0].set_ylabel("Taxa em 2024 (%)")
     eixos[0].set_xlim(0, 100)
     eixos[0].set_ylim(0, 100)
-    fig.suptitle("O sinal municipal persiste; o escolar, não",
+    fig.suptitle("O que persiste entre os anos é o município — não a escola",
                  x=0.01, ha="left", fontsize=13, fontweight="bold")
+    fig.text(0.01, -0.02,
+             "A correlação da esquerda NÃO mede persistência escolar: unir os anos "
+             "por `id_escola` liga escolas diferentes que\nreceberam o mesmo número. "
+             "O valor reflete um efeito de UF, não de escola.",
+             fontsize=8.5, color=TINTA_SECUNDARIA, ha="left", va="top")
     fig.tight_layout()
     caminho = salvar(fig, "03_persistencia_ano_a_ano")
     return caminho, {"r_escola": r_esc, "r_municipio": r_mun,
@@ -187,6 +233,11 @@ def correlacoes_municipais(mun: pd.DataFrame, features: list[str]) -> pd.DataFra
     """Correlação de Pearson de cada feature com a taxa municipal (ecológica)."""
     linhas = []
     for col in features:
+        # A tabela agregada só carrega as colunas numéricas e algumas de rótulo;
+        # features categóricas (rede, caderno, região) não têm correlação de Pearson
+        # e simplesmente não estão lá.
+        if col not in mun.columns:
+            continue
         serie = mun[col]
         if not pd.api.types.is_numeric_dtype(serie) or serie.notna().sum() < 100:
             continue
