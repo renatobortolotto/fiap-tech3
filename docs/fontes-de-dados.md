@@ -48,7 +48,17 @@ ela que separa contexto legítimo de vazamento.
 
 ## Custo
 
-A materialização completa da feature store custa **cerca de 2,3 GiB** de dados
-processados no BigQuery — dentro da franquia mensal gratuita de 1 TiB. Cada consulta
-roda com `maximum_bytes_billed = 10 GiB` como trava de segurança, e
-`make features-dry` estima o custo antes de executar.
+A materialização completa da feature store custa **cerca de 3,5 GiB** de dados
+processados no BigQuery — bem dentro da franquia mensal gratuita de 1 TiB.
+
+O `make features-dry` reporta **1,5 GiB**, e a diferença é instrutiva: duas fontes são
+*views sobre armazenamento externo* (`br_cgu_beneficios_cidadao.novo_bolsa_familia` e
+`br_fnde_fundeb.indicador_municipal`, esta última com segurança em nível de linha). O
+dry run devolve **0 bytes** para elas — não porque sejam gratuitas, mas porque o
+BigQuery não consegue estimá-las. O custo real, medido na execução, é de cerca de
+1,9 GiB.
+
+**A lição operacional:** um dry run que reporta 0 B numa view externa não é um sinal
+verde. Nessas fontes, o controle de custo tem de vir do `maximum_bytes_billed`, que
+aqui é de 10 GiB por consulta — foi ele que impediu a extração de
+`br_inep_censo_escolar.docente` (13 GiB) de rodar por engano.

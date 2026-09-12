@@ -196,6 +196,13 @@ Um teste automatizado trava essa garantia: um conjunto sintético em que cada ca
 tem uma única linha — caso em que um encoder ingênuo memorizaria o alvo — deve
 produzir AUC próxima de 0,50 em dados novos.
 
+**Uma observação que os resultados tornaram central.** Codificar `id_municipio` pelo
+alvo, no Modelo A, equivale a injetar a taxa municipal de 2023 nas linhas de 2024.
+Como treino e teste são disjuntos **no tempo**, isso é uma defasagem legítima — e é
+justamente por essa via que o Modelo A captura o efeito municipal sem usar as colunas
+`mun_lag_*`, que não existem para 2023. Acabou sendo o mecanismo dominante do modelo
+(§8.8).
+
 ### 4.3 Dois desenhos de validação
 
 Não há 2022 na base: nenhum aluno de 2023 pode ter histórico. Um único modelo com
@@ -520,27 +527,49 @@ distância de um compromisso pactuado no passado; **o resíduo ajustado** (§7.5
 desempenho relativo aos pares. Confundi-las leva a cobrar de uma rede algo que o
 indicador não está dizendo.
 
-### 8.5 Pressão demográfica pesa mais que infraestrutura
+### 8.5 Pressão demográfica pesa mais que riqueza ou saneamento
 
-Entre as variáveis municipais, as correlações mais fortes com a alfabetização são
-demográficas — idade mediana (+0,32), proporção de crianças de 5 a 9 anos (−0,31),
-índice de envelhecimento (+0,31), moradores por domicílio (−0,25) — e valem de **duas
-a cinco vezes** mais que saneamento (0,06 a 0,09) ou PIB per capita (+0,11).
+Deixando de lado o histórico defasado e os indicadores de aprendizagem (que são o
+próprio fenômeno medido antes), as correlações municipais mais fortes são
+**demográficas e de vulnerabilidade** — e a riqueza fica bem atrás.
 
-A leitura não é que idosos alfabetizem crianças. É que **municípios com muitas crianças
-por adulto têm redes sob pressão**: mais alunos por turma, mais rotatividade, menos
-atenção individual. É um sinal de capacidade instalada versus demanda, não de riqueza.
+| variável | r com a taxa municipal |
+|---|---:|
+| razão Bolsa Família / Cadastro Único | **−0,336** |
+| índice de vulnerabilidade social (IVS) | −0,312 |
+| INSE médio das escolas | +0,310 |
+| idade mediana da população | **+0,291** |
+| índice de envelhecimento | +0,273 |
+| % da população de 5 a 9 anos | **−0,271** |
+| alfabetização de adultos de 25 a 44 anos | +0,248 |
+| moradores por domicílio | −0,231 |
+| % com esgotamento inadequado | −0,109 |
+| **PIB per capita** | **+0,090** |
+
+*(n = 9.437 pares município-ano; fonte: `reports/correlacoes_municipais.csv`)*
+
+**O PIB per capita é a variável mais fraca da lista** — três vezes menos associado que a
+demografia. Municípios ricos não alfabetizam melhor por serem ricos.
+
+A leitura demográfica não é que idosos alfabetizem crianças. É que **municípios com
+muitas crianças por adulto têm redes sob pressão**: mais alunos por turma, mais
+rotatividade, menos atenção individual. É um sinal de capacidade instalada versus
+demanda — e ele reaparece de forma independente na tipologia de municípios (§10), onde
+o grupo de pior desempenho é exatamente o de maior proporção de crianças de 5 a 9 anos.
 
 ### 8.6 Associação não é alavanca — o caso da titulação docente
 
-O percentual de docentes dos anos iniciais com curso superior correlaciona **−0,45**
-com a alfabetização municipal. Mais titulação, menos alfabetização.
+O percentual de docentes dos anos iniciais com curso superior correlaciona **−0,475**
+com a alfabetização municipal (n = 9.426 pares município-ano). Mais titulação, menos
+alfabetização.
 
-A explicação fácil — confundimento regional — não se sustenta: a correlação permanece
-negativa dentro de cada região (−0,42 no Sul a −0,12 no Sudeste) e sobrevive ao
-controle por vulnerabilidade social (−0,38) e por nível socioeconômico das escolas
-(−0,39). Parte do mecanismo aparece na estrutura: titulação docente correlaciona
-**+0,52 com o IVS** — municípios mais vulneráveis têm professores mais titulados.
+A explicação fácil — confundimento regional — não se sustenta. Restringindo a 2024
+para permitir os controles (n = 4.973 municípios, r bruto = −0,452), a correlação
+permanece negativa **dentro de cada região** (de −0,42 no Sul a −0,12 no Sudeste) e
+sobrevive ao controle estatístico por vulnerabilidade social (−0,377) e por nível
+socioeconômico das escolas (−0,387). Parte do mecanismo aparece na estrutura: a
+titulação docente correlaciona **+0,52 com o IVS** — municípios mais vulneráveis têm
+professores mais titulados.
 
 **Com estes dados o mecanismo não é identificável**, e é exatamente esse o ponto. Um
 gestor que lesse a tabela de importâncias como cardápio de políticas concluiria algo
@@ -640,8 +669,8 @@ histórico e fraco onde não há — que é justamente onde um gestor mais preci
 
 **As features de escola são, na verdade, features de município.** O identificador de
 escola é anônimo e renumerado anualmente (§3). Toda a variação *entre escolas de um
-mesmo município* — que é grande — fica fora do modelo. É a limitação mais séria, e ela
-vem da fonte, não de uma escolha do projeto. O INSE por escola, provavelmente a
+mesmo município* — que é grande — fica fora do modelo. É a limitação de **dados** mais
+séria, e ela vem da fonte, não de uma escolha do projeto. O INSE por escola, provavelmente a
 variável socioeconômica mais forte disponível no país, foi perdido por isso.
 
 **Série histórica de dois anos.** Só existem 2023 e 2024. O único par defasagem→alvo
@@ -670,7 +699,10 @@ conjuntura.
 **Independência condicional é otimista.** A probabilidade de um município não atingir a
 meta supõe alunos condicionalmente independentes. Colegas de escola compartilham
 choques não observados, então o erro-padrão real é maior e as probabilidades saem mais
-extremas do que deveriam. A **ordenação** é confiável; a magnitude, não.
+extremas do que deveriam. O efeito é visível: em municípios grandes a probabilidade
+**satura em 100%**, empatando dezenas de cidades e tornando a própria métrica inútil
+para ordenar. Por isso o relatório ordena pela **lacuna em pontos percentuais**, que
+não satura.
 
 **O alvo é um corte.** 743 pontos é uma fronteira administrativa numa escala contínua.
 Uma criança com 742 e outra com 744 são praticamente idênticas em leitura, mas caem em
@@ -704,10 +736,28 @@ avaliação.
 da meta pactuada permite agir no meio do ciclo, e não diante do resultado consumado.
 
 **Identificar pares comparáveis.** O agrupamento por contexto — com o alvo
-deliberadamente fora — cria conjuntos de municípios socioeconomicamente semelhantes.
-Comparar redes dentro de um mesmo grupo é muito mais justo que comparar com a média
-nacional, e transforma o resíduo numa lista concreta de "quem, com as mesmas
+deliberadamente fora, de modo que a taxa de cada grupo seja resultado e não critério —
+produziu cinco perfis com gradiente limpo de desempenho:
+
+| grupo | municípios | % alfabetizados | o que caracteriza (↑ acima, ↓ abaixo da média dos grupos) |
+|---|---:|---:|---|
+| 1 | 622 | **52,6%** | ↑ crianças de 5-9 anos · ↓ internet pedagógica · ↑ docentes com superior · ↓ idade mediana |
+| 2 | 1.138 | 57,9% | ↑ cobertura do Bolsa Família · ↓ renda per capita · ↓ INSE · ↓ alfabetização de adultos |
+| 3 | 763 | 60,5% | ↑ distorção idade-série · ↑ alunos por turma · ↑ internet pedagógica · ↑ alfabetização de adultos |
+| 4 | 1.370 | 67,6% | ↑ IDHM educação · ↑ renda per capita · ↑ INSE · ↓ Bolsa Família |
+| 5 | 1.080 | **69,9%** | ↑ investimento por aluno · ↓ distorção idade-série · ↓ alunos por turma · ↑ idade mediana |
+
+A tipologia é legível como política: o **grupo 1** é pressão demográfica sem
+infraestrutura (muitas crianças por adulto, pouca conectividade); o **2** é pobreza
+estrutural; o **3** é gargalo de fluxo escolar (distorção e turmas grandes, apesar de
+condições razoáveis); o **5** é rede bem financiada com folga demográfica.
+
+Comparar municípios *dentro* de um mesmo grupo é muito mais justo que comparar com a
+média nacional, e transforma o resíduo numa lista concreta de "quem, com as mesmas
 condições, consegue mais".
+
+> Note que o grupo de pior desempenho é também o de **maior** titulação docente — a
+> mesma associação contraintuitiva de §8.6, aparecendo agora por outro caminho.
 
 **O que este modelo não deve fazer.** Não deve ser usado para classificar crianças
 individualmente. A acurácia individual é modesta por razões estruturais, e rotular uma
@@ -764,7 +814,7 @@ make setup                                          # venv + dependências
 # O ADC local desta máquina pertence a outra conta; use o token de curta duração:
 export GCP_ACCESS_TOKEN=$(gcloud auth print-access-token)
 
-make features-dry    # valida os SQLs e estima o custo no BigQuery (~2,3 GiB)
+make features-dry    # valida os 11 SQLs e estima o custo (~1,5 GiB estimáveis)
 make features        # materializa as 11 tabelas de features.*
 make dados           # exporta a ABT para data/processed/abt_aluno.parquet
 make eda             # análise exploratória -> images/ e reports/eda.md
@@ -795,6 +845,8 @@ tech-challenge-fase3/
 │   ├── evaluation/      métricas, interpretabilidade, aplicação
 │   └── visualization/   estilo, EDA, gráficos
 ├── sql/features/    as 11 tabelas da feature store, documentadas
+│                    (o número 03 está ausente de propósito: era o histórico
+│                     escolar, hipótese refutada e preservada em docs/descartado/)
 ├── reports/         métricas, relatórios e rankings gerados
 ├── images/          figuras
 ├── docs/            decisões analíticas, fontes de dados, arquitetura

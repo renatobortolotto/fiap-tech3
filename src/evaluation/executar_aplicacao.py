@@ -76,6 +76,8 @@ def main(argv: list | None = None) -> int:
         REPORTS_DIR / f"municipios_por_grupo_{args.desenho}.csv", index=False)
     f_grupos = plots.fig_grupos(perfil, municipios,
                                 nome=f"22_grupos_municipais_{sufixo}")
+    caracteristicas = aplicacao.caracterizar_grupos(perfil)
+    caracteristicas.to_csv(REPORTS_DIR / f"perfis_caracterizados_{args.desenho}.csv")
 
     # --- 4. Risco de não atingir a meta --------------------------------------
     metas_disponiveis = "mun_lag_meta_ano_alvo" in teste.columns and \
@@ -178,12 +180,15 @@ def main(argv: list | None = None) -> int:
         "",
         f"![grupos](../images/{f_grupos.split('/')[-1]})",
         "",
-        "| grupo | municípios | % alfabetizados |",
-        "|---|---:|---:|",
+        "Cada perfil é descrito pelas variáveis em que mais se afasta da média dos "
+        "grupos (↑ acima, ↓ abaixo):",
+        "",
+        "| grupo | municípios | % alfabetizados | o que caracteriza |",
+        "|---|---:|---:|---|",
     ]
-    for g, r in perfil.iterrows():
+    for g, r in caracteristicas.iterrows():
         md.append(f"| {g} | {_mil(r['n_municipios'])} | "
-                  f"{_v(r['taxa_observada']*100, 1)}% |")
+                  f"{_v(r['taxa_observada']*100, 1)}% | {r['caracteristicas']} |")
 
     if not risco_meta.empty:
         # Ordenar pela probabilidade satura: em municípios grandes o erro-padrão é

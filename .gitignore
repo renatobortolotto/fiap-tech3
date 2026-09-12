@@ -13,13 +13,21 @@ data/interim/*
 data/processed/*
 !data/**/.gitkeep
 
-# Modelos treinados (reproduzíveis via `make train`)
+# Modelos treinados e vetores de probabilidade: reproduzíveis via `make modelo-a` /
+# `make modelo-b`, e grandes demais para versionar (o .npy do teste tem 37 MiB).
 models/*
 !models/.gitkeep
+reports/*.npy
 
-# Credenciais
+# Credenciais — a regra ampla existe porque chaves de service account do GCP são
+# arquivos .json; as exceções liberam os artefatos legítimos do projeto.
 *.json
 !config/*.json
+# (o .gitignore não aceita comentário na mesma linha do padrão — ele vira parte dela)
+# manifesto das features de cada desenho, artefato de reprodutibilidade:
+!reports/*.json
+# notebooks são JSON por dentro:
+!notebooks/*.ipynb
 .env
 
 # Sistema

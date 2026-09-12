@@ -209,3 +209,30 @@ def risco_de_nao_atingir_meta(
         labels=["provável cumprimento", "atenção", "risco alto", "risco crítico"],
     )
     return df.sort_values("prob_nao_atingir", ascending=False)
+
+
+def caracterizar_grupos(perfil: pd.DataFrame, n_variaveis: int = 4) -> pd.DataFrame:
+    """Descreve cada grupo pelas variáveis em que ele mais se afasta da média geral.
+
+    Um agrupamento sem caracterização é um rótulo sem conteúdo: saber que "o grupo 1
+    alfabetiza 52,6%" não diz a um gestor o que esse grupo É. Aqui cada perfil é
+    padronizado contra a média de todos os grupos, e reportamos as variáveis de maior
+    desvio absoluto — as que efetivamente separam aquele grupo dos demais.
+    """
+    variaveis = [c for c in perfil.columns
+                 if c not in ("n_municipios", "taxa_observada")]
+    z = ((perfil[variaveis] - perfil[variaveis].mean()) /
+         perfil[variaveis].std(ddof=0).replace(0, np.nan))
+
+    linhas = []
+    for grupo in perfil.index:
+        desvios = z.loc[grupo].dropna().sort_values(key=abs, ascending=False)
+        marcas = [f"{'↑' if desvios[v] > 0 else '↓'} {v}"
+                  for v in desvios.index[:n_variaveis]]
+        linhas.append({
+            "grupo": grupo,
+            "n_municipios": int(perfil.loc[grupo, "n_municipios"]),
+            "taxa_observada": float(perfil.loc[grupo, "taxa_observada"]),
+            "caracteristicas": " · ".join(marcas),
+        })
+    return pd.DataFrame(linhas).set_index("grupo")
