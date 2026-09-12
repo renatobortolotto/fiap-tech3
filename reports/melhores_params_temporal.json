@@ -1,0 +1,18 @@
+{
+  "desenho": "temporal",
+  "roc_auc_cv": 0.6497999500377218,
+  "desvio_cv": 0.00922104997274354,
+  "n_tentativas": 10,
+  "n_amostra": 120000,
+  "params": {
+    "n_estimators": 500,
+    "learning_rate": 0.02139954903017622,
+    "num_leaves": 47,
+    "min_child_samples": 83,
+    "subsample": 0.9208787923016158,
+    "colsample_bytree": 0.44473038620786254,
+    "reg_alpha": 8.862326508576253,
+    "reg_lambda": 1.2273800987852967,
+    "max_depth": 4
+  }
+}

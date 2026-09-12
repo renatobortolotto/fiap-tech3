@@ -295,6 +295,38 @@ seria defensável**, ao custo de calibração pior.
 não é "preciso de um modelo maior". É que o ganho está em obter dados melhores, não em
 espremer mais o mesmo dado — o que direciona a §11.
 
+### 5.1 A otimização de hiperparâmetros confirma o mesmo diagnóstico
+
+A busca com Optuna rodou **10 tentativas sob validação cruzada agrupada por município**
+(`StratifiedGroupKFold`, 3 dobras). O agrupamento é o detalhe que importa: sem ele, como
+praticamente toda feature é constante dentro de um município, o hiperparâmetro vencedor
+seria o que melhor **memoriza** a média municipal — exatamente o oposto do objetivo.
+
+Duas leituras do resultado:
+
+**A dispersão entre configurações é do tamanho do ruído.** As dez tentativas ficaram
+entre ROC AUC **0,6409 e 0,6498** — uma faixa de 0,009, praticamente idêntica ao desvio
+entre dobras da melhor configuração (± 0,0092). Nem a escolha do algoritmo (§5) nem a
+dos hiperparâmetros movem o resultado de forma distinguível.
+
+**A configuração vencedora é fortemente REGULARIZADA**, e por conta própria:
+
+| parâmetro | padrão do projeto | escolhido pela busca |
+|---|---:|---:|
+| `max_depth` | 7 | **4** |
+| `colsample_bytree` | 0,80 | **0,44** |
+| `reg_alpha` (L1) | 0,0 | **8,86** |
+| `min_child_samples` | 200 | 83 |
+| `learning_rate` | 0,050 | 0,021 |
+
+A busca escolheu árvores rasas, L1 forte e **menos da metade das features por árvore**.
+Ou seja, ela chegou sozinha à conclusão que a ablação (§8.10) obteve por outro caminho:
+**a maior parte das 125 colunas é ruído**, e o melhor uso da capacidade do modelo é
+ignorá-las.
+
+Os resultados completos estão em `reports/melhores_params_temporal.json` e
+`reports/optuna_historico_temporal.csv`.
+
 ## 6. Métricas de avaliação
 
 Cinco métricas, cada uma respondendo a uma pergunta distinta. A escolha de reportar
